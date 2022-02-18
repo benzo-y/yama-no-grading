@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default {
   name: 'App',
@@ -59,5 +61,22 @@ export default {
     {name: 'routes', label: "リスト"},
     ]
   }),
+
+  created () {
+    // ログイン済み否か確認
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if(user) {
+        this.setLoginUser(user)
+        this.$router.push({ name: 'matrix' }, () => {})
+      } else {
+        this.deleteLoginUser()
+        this.$router.push({ name: 'login' }, () => {})
+      }
+    })
+  },
+  methods: {
+    ...mapActions(['setLoginUser', 'deleteLoginUser'])
+  }
 };
 </script>

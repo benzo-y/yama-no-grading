@@ -3,8 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import { initializeApp } from 'firebase/app'
 
 Vue.config.productionTip = false
+
+// Initialize Firebase
+const config = {
+};
+
+initializeApp(config);
 
 new Vue({
   router,

@@ -11,7 +11,7 @@
           </p>
         </div>
         <div>
-          <v-btn color="info">
+          <v-btn color="info" @click="login">
             Googleアカウントでログイン
           </v-btn>
         </div>
@@ -19,3 +19,14 @@
     </v-row>
   </v-container>
 </template>
+
+<script>
+
+import { mapActions } from "vuex"
+
+export default {
+  methods: {
+    ...mapActions(['login'])
+  }
+}
+</script>
