@@ -8,9 +8,11 @@
       <v-app-bar-title>
         山のグレーディング
       </v-app-bar-title>
+
       <v-tabs
         centered
         class="ml-n9"
+        v-show="$store.state.login_user"
       >
         <v-tab
           v-for="link in links"
@@ -23,18 +25,20 @@
       <v-avatar
         color="orange"
         size="36"
+        v-show="$store.state.login_user"
       >仮</v-avatar>
-    <v-btn
-      color="blue-grey"
-      class="ma-2 white--text"
-    >
-      ログアウト仮
-      <v-icon
-        right
+      <v-btn
+        color="blue-grey"
+        class="ma-2 white--text"
+        v-show="$store.state.login_user"
       >
-        mdi-logout
-      </v-icon>
-    </v-btn>
+        ログアウト仮
+        <v-icon
+          right
+        >
+          mdi-logout
+        </v-icon>
+      </v-btn>
 
     </v-app-bar>
 
