@@ -12,7 +12,7 @@
       <v-tabs
         centered
         class="ml-n9"
-        v-show="$store.state.login_user"
+        v-if="$store.state.login_user"
       >
         <v-tab
           v-for="link in links"
@@ -24,16 +24,17 @@
 
       <v-avatar
         size="36"
-        v-show="$store.state.login_user"
+        v-if="$store.state.login_user"
       >
         <img 
         :src="$store.state.login_user.photoURL"
-        :alt="$store.state.login_user.displayName">
+          :alt="$store.state.login_user.displayName"
+        />
       </v-avatar>
       <v-btn
         color="blue-grey"
         class="ma-2 white--text"
-        v-show="$store.state.login_user"
+        v-if="$store.state.login_user"
       >
         ログアウト仮
         <v-icon
