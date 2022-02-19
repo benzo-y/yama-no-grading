@@ -23,10 +23,13 @@
       </v-tabs>
 
       <v-avatar
-        color="orange"
         size="36"
         v-show="$store.state.login_user"
-      >仮</v-avatar>
+      >
+        <img 
+        :src="$store.state.login_user.photoURL"
+        :alt="$store.state.login_user.displayName">
+      </v-avatar>
       <v-btn
         color="blue-grey"
         class="ma-2 white--text"
