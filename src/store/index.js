@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { GoogleAuthProvider, getAuth, signInWithRedirect } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, signInWithRedirect, signOut } from "firebase/auth";
 
 Vue.use(Vuex)
 
@@ -22,6 +22,10 @@ export default new Vuex.Store({
       const google_auth_provider = new GoogleAuthProvider();
       const auth = getAuth();
       signInWithRedirect(auth, google_auth_provider)
+    },
+    logout() {
+      const auth = getAuth();
+      signOut(auth);
     },
     setLoginUser({commit}, user) {
       // ステートのログイン情報を更新

@@ -27,7 +27,7 @@
         v-if="$store.state.login_user"
       >
         <img 
-        :src="$store.state.login_user.photoURL"
+          :src="$store.state.login_user.photoURL"
           :alt="$store.state.login_user.displayName"
         />
       </v-avatar>
@@ -35,8 +35,9 @@
         color="blue-grey"
         class="ma-2 white--text"
         v-if="$store.state.login_user"
+        @click="logout"
       >
-        ログアウト仮
+        ログアウト
         <v-icon
           right
         >
@@ -80,7 +81,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['setLoginUser', 'deleteLoginUser'])
+    ...mapActions(['setLoginUser', 'deleteLoginUser', 'logout'])
   }
 };
 </script>
