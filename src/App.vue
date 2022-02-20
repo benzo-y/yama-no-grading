@@ -73,7 +73,9 @@ export default {
     onAuthStateChanged(auth, (user) => {
       if(user) {
         this.setLoginUser(user)
-        this.$router.push({ name: 'matrix' }, () => {})
+        if(this.$route.path === "/" ){
+          this.$router.push({ name: 'matrix' }, () => {})
+        }
       } else {
         this.deleteLoginUser()
         this.$router.push({ name: 'login' }, () => {})
