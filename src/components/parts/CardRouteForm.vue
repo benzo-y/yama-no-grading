@@ -3,8 +3,7 @@
     <v-card-title>
       <div style="width:100%">
         {{route.name}}
-        <v-icon class="float-right mr-4" color="yellow darken-3">mdi-trophy</v-icon>
-        <v-icon class="float-right mr-4" color="grey lighten-1">mdi-trophy</v-icon>
+        <IconClimbed :id="route.id" class="float-right mr-4"/>
       </div>
     </v-card-title>
     <v-card-text>
@@ -37,7 +36,10 @@
 
 <script>
 
+import IconClimbed from "./IconClimbed.vue"
+
 export default {
+  components: {IconClimbed},
   data: () => ({
     label: {
       name : 'ルート名称',
