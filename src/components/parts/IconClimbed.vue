@@ -7,21 +7,35 @@
 
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data: () => ({
     climbed: false,
   }),
   props: {
-    id: {type: String}
+    id: {type: String},
+  },
+  computed: {
+    ...mapGetters(['hasClimbed']),
   },
   methods: {
+    ...mapActions(['addClimbedId', 'deleteClimbedId']),
     clickIcon() {
       this.climbed = !this.climbed;
-      // firebaseに保存
-      // ストアに保存
-    }
-  }
+      if(this.climbed) {
+        // ストアとfirebaseに保存
+        this.addClimbedId(this.id);
+      } else {
+        // ストアとfirebaseから削除
+        this.deleteClimbedId(this.id);
+      }
+    },
+  },
+  created() {
+    // ストアから登頂チェックを取得
+    this.climbed = this.hasClimbed(this.id);
+  },
 }
 
 </script>
