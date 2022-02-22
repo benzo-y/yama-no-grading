@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { GoogleAuthProvider, getAuth, signInWithRedirect, signOut } from "firebase/auth";
+import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { db } from '../plugins/firebase';
 
 Vue.use(Vuex)
 
@@ -15,6 +17,9 @@ export default new Vuex.Store({
     },
     deleteLoginUser(state) {
       state.login_user = null;
+    },
+    setClimbedIds(state, ids) {
+      state.climbedIdSet = new Set(ids);
     },
     addClimbedId(state, id) {
       state.climbedIdSet.add(id);
@@ -42,13 +47,30 @@ export default new Vuex.Store({
       // ステートのログイン情報を削除
       commit('deleteLoginUser');
     },
-    addClimbedId({commit}, id) {
-      // TODO:fierbaseの更新処理
+    async setClimbedIds({commit, getters}) {
+      // fierbaseのusersドキュメントのclimbedIdsを取得
+      const userRef = doc(db, "users", getters.uid);
+      const userDoc = await getDoc(userRef);
+      // ステートの登頂チェックにデータを格納
+      commit('setClimbedIds', userDoc.get("climbedIds"));
+    },
+    async addClimbedId({commit, getters}, id) {
+      // fierbaseのusersドキュメントのclimbedIdsからIDを取得
+      const userRef = doc(db, "users", getters.uid);
+      setDoc(userRef, {}, { merge: true });      
+      await updateDoc(userRef, {
+        climbedIds: arrayUnion(id)
+      });
       // ステートの登頂チェックにルートのIDを追加
       commit('addClimbedId', id);
     },
-    deleteClimbedId({commit}, id) {
-      // TODO:fierbaseの更新処理
+    async deleteClimbedId({commit,getters}, id) {
+      // fierbaseのusersドキュメントのclimbedIdsからIDを削除
+      const userRef = doc(db, "users", getters.uid);
+      setDoc(userRef, {}, { merge: true });      
+      await updateDoc(userRef, {
+        climbedIds: arrayRemove(id)
+      });
       // ステートの登頂チェックにルートのIDを削除
       commit('deleteClimbedId', id);
     },
@@ -56,6 +78,7 @@ export default new Vuex.Store({
   modules: {
   },
   getters: {
+    uid: state => state.login_user ? state.login_user.uid : null,
     hasClimbed: state => id => state.climbedIdSet.has(id)
   }
 })

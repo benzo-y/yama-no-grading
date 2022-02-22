@@ -3,19 +3,14 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import { initializeApp } from 'firebase/app'
+import firebase from './plugins/firebase'
 
 Vue.config.productionTip = false
-
-// Initialize Firebase
-const config = {
-};
-
-initializeApp(config);
 
 new Vue({
   router,
   store,
   vuetify,
+  firebase,
   render: h => h(App)
 }).$mount('#app')

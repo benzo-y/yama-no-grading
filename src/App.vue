@@ -72,7 +72,8 @@ export default {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if(user) {
-        this.setLoginUser(user)
+        this.setLoginUser(user);
+        this.setClimbedIds();
         if(this.$route.path === "/" ){
           this.$router.push({ name: 'matrix' }, () => {})
         }
@@ -83,7 +84,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['setLoginUser', 'deleteLoginUser', 'logout'])
+    ...mapActions(['setLoginUser', 'setClimbedIds','deleteLoginUser', 'logout'])
   }
 };
 </script>
