@@ -81,7 +81,7 @@ export default {
         this.deleteLoginUser()
         this.$router.push({ name: 'login' }, () => {})
       }
-    })
+    });
   },
   methods: {
     ...mapActions(['setLoginUser', 'setClimbedIds','deleteLoginUser', 'logout'])

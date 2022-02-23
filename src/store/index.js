@@ -79,6 +79,7 @@ export default new Vuex.Store({
   },
   getters: {
     uid: state => state.login_user ? state.login_user.uid : null,
-    hasClimbed: state => id => state.climbedIdSet.has(id)
+    getHasClimbedById: state => id => state.climbedIdSet.has(id),
+    climbedIdSet: state => state.climbedIdSet,
   }
 })
