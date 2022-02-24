@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { GoogleAuthProvider, getAuth, signInWithRedirect, signOut } from "firebase/auth";
-import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { doc, getDoc, getDocs, setDoc, updateDoc, collection, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db } from '../plugins/firebase';
+
+// ダミーデータ
+import dummy from '../dummyData/dummy.json';
 
 Vue.use(Vuex)
 
@@ -10,6 +13,7 @@ export default new Vuex.Store({
   state: {
     login_user: null,
     climbedIdSet: new Set(),
+    routeMap: new Map(),
   },
   mutations: {
     setLoginUser(state, user) {
@@ -26,6 +30,9 @@ export default new Vuex.Store({
     },
     deleteClimbedId(state, id) {
       state.climbedIdSet.delete(id);
+    },
+    setRouteMap(state, routeMap) {
+      state.routeMap = routeMap;
     }
   },
   actions: {
@@ -74,6 +81,35 @@ export default new Vuex.Store({
       // ステートの登頂チェックにルートのIDを削除
       commit('deleteClimbedId', id);
     },
+    async setRoutes({commit, getters}) {
+      // デフォルトの山情報を取得
+      let routesMap = new Map([
+        ...Object.entries(dummy),
+        ["other", []],
+        ["all", []]
+      ]);
+
+      // fierbaseからusersが登録しているroutesコレクションを取得
+      const othreArr = routesMap.get('other');
+      const routeDocs = await getDocs(collection(db, "users", getters.uid, "routes"));
+      routeDocs.forEach(doc => {
+        let data = doc.data();
+        data.id = doc.id;
+        data.location = "other";
+        othreArr.push(data);
+      });
+
+      // すべて用の配列を設定
+      const allArr = [];
+      routesMap.forEach((arr) => {
+        allArr.push(...arr);
+      });
+      routesMap.set("all", allArr);
+
+      // ステートの登頂チェックにデータを格納
+      commit('setRouteMap', routesMap);
+    },
+
   },
   modules: {
   },

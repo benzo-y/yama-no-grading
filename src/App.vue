@@ -74,6 +74,7 @@ export default {
       if(user) {
         this.setLoginUser(user);
         this.setClimbedIds();
+        this.setRoutes();
         if(this.$route.path === "/" ){
           this.$router.push({ name: 'matrix' }, () => {})
         }
@@ -84,7 +85,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(['setLoginUser', 'setClimbedIds','deleteLoginUser', 'logout'])
+    ...mapActions(['setLoginUser', 'setClimbedIds', 'setRoutes','deleteLoginUser', 'logout'])
   }
 };
 </script>
