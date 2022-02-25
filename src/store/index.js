@@ -101,7 +101,12 @@ export default new Vuex.Store({
 
       // すべて用の配列を設定
       const allArr = [];
-      routesMap.forEach((arr) => {
+      routesMap.forEach((arr, key) => {
+        // デフォルトの山情報にidとlocationを設定
+        arr.forEach(obj => {
+          obj.id = key + "-" + obj.index;
+          obj.location = key;
+        });
         allArr.push(...arr);
       });
       routesMap.set("all", allArr);
