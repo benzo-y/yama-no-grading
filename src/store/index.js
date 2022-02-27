@@ -122,5 +122,18 @@ export default new Vuex.Store({
     uid: state => state.login_user ? state.login_user.uid : null,
     getHasClimbedById: state => id => state.climbedIdSet.has(id),
     climbedIdSet: state => state.climbedIdSet,
+    getRoutesBylocation: state => locationArr => {
+      // 未指定の場合はallを返却
+      if (!locationArr.length) {
+        return state.routeMap.get("all");
+      }
+
+      // 指定があった地域のルートを返却
+      let routes = [];
+      locationArr.forEach(val => {
+        routes = [...routes, state.routeMap.get(val)];
+      })
+      return routes;
+    },
   }
 })

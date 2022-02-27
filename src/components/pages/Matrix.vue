@@ -93,13 +93,30 @@
 
 
 <script>
-  export default {
+import { mapGetters } from "vuex"
+
+export default {
     data: () => ({
+      routes: [],
       locationValue: [],
       locationItem: ["信州", "山梨", "静岡", "群馬", "岐阜", "栃木", "石鎚山系", "秋田", "富山", "百名山", "その他"],
       climbedValue: [],
       climbedItem: ["on", "off"]
     }),
+    computed: {
+      ...mapGetters(["getRoutesBylocation"]),
+    },
+    created() {
+      this.routes = this.getRoutesBylocation(this.locationValue);
+    },
+    mounted() {
+      // stateの値の変更を検知する（ミューテーション実行後の値を取得）
+      this.$store.subscribe((mutation) => {
+        if (mutation.type === 'setRouteMap') {
+          this.routes = this.getRoutesBylocation(this.locationValue);
+        }
+      });
+    }
   }
 </script>
 
