@@ -49,15 +49,7 @@
               :key="`${n}${j}`"
               class="col-11-5"
             >
-              <v-card height="100%">
-                <v-list dense >
-                  <v-list-item v-for="i in n*j*2" :key="i" style="min-height: auto;">
-                    <v-list-item-content style="padding: 0;">
-                      {{i}}-山ルート
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list>
-              </v-card>
+              <CardRouteListVue :routes="routes"/>
             </v-col>
           </v-row>
         </v-container>
@@ -93,6 +85,7 @@
 
 
 <script>
+import CardRouteListVue from "./matrix/CardRouteList.vue";
 import { mapGetters } from "vuex"
 
 export default {
@@ -103,6 +96,9 @@ export default {
       climbedValue: [],
       climbedItem: ["on", "off"]
     }),
+    components: {
+      CardRouteListVue
+    },
     computed: {
       ...mapGetters(["getRoutesBylocation"]),
     },

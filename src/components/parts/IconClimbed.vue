@@ -35,6 +35,9 @@ export default {
       }
     },
   },
+  created() {
+    this.hasClimbed = this.getHasClimbedById(this.id);
+  },
   watch: {
     _climbedIdSet() {
       this.hasClimbed = this.getHasClimbedById(this.id);
