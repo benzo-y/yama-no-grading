@@ -104,7 +104,7 @@ export default new Vuex.Store({
       routesMap.forEach((arr, key) => {
         // デフォルトの山情報にidとlocationを設定
         arr.forEach(obj => {
-          obj.id = key + "-" + obj.index;
+          obj.id = obj.id ? obj.id : key + "-" + obj.index;
           obj.location = key;
         });
         allArr.push(...arr);
