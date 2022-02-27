@@ -1,34 +1,32 @@
 <template>
-  <v-container class="text-sm-body-2">
+  <v-container class="text-sm-body-2" fluid>
     <v-row>
       <v-col cols="12">
         <v-card>
-          <v-container>
-            <v-row>
-              <v-col cols="1"></v-col>
-              <v-col cols="8">
-                <v-select
-                  v-model="locationValue"
-                  multiple
-                  chips
-                  dense 
-                  :items="locationItem"
-                  label="地域"
-                ></v-select>
-              </v-col>
-              <v-col cols="2">
-                <v-select
-                  v-model="climbedValue"
-                  multiple
-                  chips
-                  dense 
-                  :items="climbedItem"
-                  label="登頂済み"
-                ></v-select>
-              </v-col>
-              <v-col cols="1"></v-col>
-            </v-row>
-          </v-container>
+          <v-row>
+            <v-col cols="1"></v-col>
+            <v-col cols="8">
+              <v-select
+                v-model="locationValue"
+                multiple
+                chips
+                dense
+                :items="locationItem"
+                label="地域"
+              ></v-select>
+            </v-col>
+            <v-col cols="2">
+              <v-select
+                v-model="climbedValue"
+                multiple
+                chips
+                dense
+                :items="climbedItem"
+                label="登頂済み"
+              ></v-select>
+            </v-col>
+            <v-col cols="1"></v-col>
+          </v-row>
         </v-card>
       </v-col>
       <v-col cols="1">
@@ -37,47 +35,43 @@
         </v-card>
       </v-col>
       <v-col cols="11">
-        <v-container>
-          <v-row v-for="n in 10" :key="n">
-            <v-col cols="1">
-              <v-card height="100%">
-                {{n}}
-              </v-card>
-            </v-col>
-            <v-col
-              v-for="j in 5"
-              :key="`${n}${j}`"
-              class="col-11-5"
-            >
-              <CardRouteListVue :routes="routes"/>
-            </v-col>
-          </v-row>
-        </v-container>
+        <v-row v-for="n in 10" :key="n">
+          <v-col cols="1">
+            <v-card height="100%">
+              {{n}}
+            </v-card>
+          </v-col>
+          <v-col
+            v-for="j in 5"
+            :key="`${n}${j}`"
+            class="col-11-5"
+          >
+            <CardRouteListVue :routes="routes"/>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="1"></v-col>
       <v-col cols="11">
-        <v-container>
-          <v-row>
-            <v-col cols="1"></v-col>
-            <v-col
-              v-for="i in 5"
-              :key="i"
-              class="col-11-5"
-            >
-              <v-card>
-                {{i}}
-              </v-card>
-            </v-col>
-            <v-col cols="1"></v-col>
-            <v-col cols="11">
-              <v-card>
-                技術的難易度
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-container>
+        <v-row>
+          <v-col cols="1"></v-col>
+          <v-col
+            v-for="i in 5"
+            :key="i"
+            class="col-11-5"
+          >
+            <v-card>
+              {{i}}
+            </v-card>
+          </v-col>
+          <v-col cols="1"></v-col>
+          <v-col cols="11">
+            <v-card>
+              技術的難易度
+            </v-card>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>

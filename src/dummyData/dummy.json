@@ -2,7 +2,7 @@
   "shinshu": [
     {
       "index": 1,
-      "name": "Dummy",
+      "name": "周 甲斐駒ヶ岳（北沢峠）＜仙水峠・双児山＞",
       "physical" : 1,
       "technological" : "A",
       "start_point_name" : "hoge",
@@ -21,7 +21,7 @@
   "yamanashi": [
     {
       "index": 1,
-      "name": "Dummy",
+      "name": "Dummy2",
       "physical" : 1,
       "technological" : "A",
       "start_point_name" : "hoge",
