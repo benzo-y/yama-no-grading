@@ -14,6 +14,7 @@ export default new Vuex.Store({
     login_user: null,
     climbedIdSet: new Set(),
     routeMap: new Map(),
+    matrixMap: new Map(),
   },
   mutations: {
     setLoginUser(state, user) {
@@ -33,7 +34,11 @@ export default new Vuex.Store({
     },
     setRouteMap(state, routeMap) {
       state.routeMap = routeMap;
+    },
+    setMatrixMap(state, matrixMap) {
+      state.matrixMap = matrixMap;
     }
+
   },
   actions: {
     login() {
@@ -101,11 +106,35 @@ export default new Vuex.Store({
 
       // すべて用の配列を設定
       const allArr = [];
+      const matrixMap = new Map(); 
       routesMap.forEach((arr, key) => {
         // デフォルトの山情報にidとlocationを設定
         arr.forEach(obj => {
           obj.id = obj.id ? obj.id : key + "-" + obj.index;
           obj.location = key;
+
+          const pref = obj.physical + "-" + obj.technological;
+
+          // TODO:リファクタリング
+          if(!matrixMap.has(pref)) {
+            matrixMap.set(pref, new Map());
+          }
+          if(!matrixMap.get(pref).has("all")) {
+            matrixMap.get(pref).set("all", [obj]);
+          } else {
+            matrixMap.get(pref).set(
+              "all", 
+              [...matrixMap.get(pref).get("all"), obj]
+            );
+          }
+          if(!matrixMap.get(pref).has(key)) {
+            matrixMap.get(pref).set(key, [obj]);
+          } else {
+            matrixMap.get(pref).set(
+              key, 
+              [...matrixMap.get(pref).get(key), obj]
+            );
+          }
         });
         allArr.push(...arr);
       });
@@ -113,6 +142,7 @@ export default new Vuex.Store({
 
       // ステートの登頂チェックにデータを格納
       commit('setRouteMap', routesMap);
+      commit('setMatrixMap', matrixMap);
     },
 
   },
@@ -122,18 +152,6 @@ export default new Vuex.Store({
     uid: state => state.login_user ? state.login_user.uid : null,
     getHasClimbedById: state => id => state.climbedIdSet.has(id),
     climbedIdSet: state => state.climbedIdSet,
-    getRoutesBylocation: state => locationArr => {
-      // 未指定の場合はallを返却
-      if (!locationArr.length) {
-        return state.routeMap.get("all");
-      }
-
-      // 指定があった地域のルートを返却
-      let routes = [];
-      locationArr.forEach(val => {
-        routes = [...routes, state.routeMap.get(val)];
-      })
-      return routes;
-    },
+    matrixMap: state => state.matrixMap,
   }
 })

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="text-sm-body-2" fluid>
+  <v-container class="text-sm-body-2 mt-5" fluid>
     <v-row>
       <v-col cols="12">
         <v-card>
@@ -12,6 +12,8 @@
                 chips
                 dense
                 :items="locationItem"
+                item-text="name"
+                item-value="id"
                 label="地域"
               ></v-select>
             </v-col>
@@ -35,18 +37,18 @@
         </v-card>
       </v-col>
       <v-col cols="11">
-        <v-row v-for="n in 10" :key="n">
+        <v-row v-for="phy in physical" :key="phy">
           <v-col cols="1">
             <v-card height="100%">
-              {{n}}
+              {{phy}}
             </v-card>
           </v-col>
           <v-col
-            v-for="j in 5"
-            :key="`${n}${j}`"
+            v-for="tech in technological"
+            :key="`${phy}${tech}`"
             class="col-11-5"
           >
-            <CardRouteListVue :routes="routes"/>
+            <CardRouteListVue :routes="createRouteList(phy, tech)"/>
           </v-col>
         </v-row>
       </v-col>
@@ -57,12 +59,12 @@
         <v-row>
           <v-col cols="1"></v-col>
           <v-col
-            v-for="i in 5"
-            :key="i"
+            v-for="tech in technological"
+            :key="tech"
             class="col-11-5"
           >
             <v-card>
-              {{i}}
+              {{tech}}
             </v-card>
           </v-col>
           <v-col cols="1"></v-col>
@@ -85,8 +87,23 @@ import { mapGetters } from "vuex"
 export default {
     data: () => ({
       routes: [],
+      matrix: new Map(),
+      physical: [1, 2 ,3 ,4 ,5 ,6 ,7 ,8 , 9, 10],
+      technological: ["A", "B", "C", "D", "E"],
       locationValue: [],
-      locationItem: ["信州", "山梨", "静岡", "群馬", "岐阜", "栃木", "石鎚山系", "秋田", "富山", "百名山", "その他"],
+      locationItem: [
+        {id:"shinshu", name:"信州"},
+        {id:"yamanashi", name:"山梨"},
+        {id:"shizuoka", name:"静岡"},
+        {id:"gunma", name:"群馬"},
+        {id:"gifu", name:"岐阜"},
+        {id:"tochigi", name:"栃木"},
+        {id:"ishizuchisankei", name:"石鎚山系"},
+        {id:"akita", name:"秋田"},
+        {id:"toyama", name:"富山"},
+        {id:"hyaku", name:"百名山"},
+        {id:"other", name:"その他"}
+      ],
       climbedValue: [],
       climbedItem: ["on", "off"]
     }),
@@ -94,18 +111,36 @@ export default {
       CardRouteListVue
     },
     computed: {
-      ...mapGetters(["getRoutesBylocation"]),
-    },
-    created() {
-      this.routes = this.getRoutesBylocation(this.locationValue);
+      ...mapGetters(["matrixMap"]),
     },
     mounted() {
       // stateの値の変更を検知する（ミューテーション実行後の値を取得）
       this.$store.subscribe((mutation) => {
-        if (mutation.type === 'setRouteMap') {
-          this.routes = this.getRoutesBylocation(this.locationValue);
+        if (mutation.type === 'setMatrixMap') {
+          this.matrix = this.matrixMap;
         }
       });
+    },
+    methods: {
+      createRouteList(physical, technological) {
+        // TODO:リファクタリング
+        const pref = physical + "-" + technological;        
+        if (!this.matrixMap.size || !this.matrixMap.has(pref)) {
+          return [];
+        }
+
+        if(this.locationValue.length) {
+          let routes = [];
+          this.locationValue.forEach(val => {
+            console.log(this.matrixMap.get(pref));
+            if(this.matrixMap.get(pref).has(val)) {
+              routes = [...routes, ...this.matrixMap.get(pref).get(val)];
+            }
+          });
+          return routes;
+        }
+        return this.matrixMap.get(pref).get("all");
+      }
     }
   }
 </script>
