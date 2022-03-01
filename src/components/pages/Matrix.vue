@@ -132,7 +132,6 @@ export default {
         if(this.locationValue.length) {
           let routes = [];
           this.locationValue.forEach(val => {
-            console.log(this.matrixMap.get(pref));
             if(this.matrixMap.get(pref).has(val)) {
               routes = [...routes, ...this.matrixMap.get(pref).get(val)];
             }
