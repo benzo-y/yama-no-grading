@@ -93,6 +93,7 @@ export default new Vuex.Store({
         ["other", []],
         ["all", []]
       ]);
+      const matrixMap = new Map(); 
 
       // fierbaseからusersが登録しているroutesコレクションを取得
       const othreArr = routesMap.get('other');
@@ -104,43 +105,28 @@ export default new Vuex.Store({
         othreArr.push(data);
       });
 
-      // すべて用の配列を設定
+      // すべて用の配列とマトリクス用のマップを作成
       const allArr = [];
-      const matrixMap = new Map(); 
-      routesMap.forEach((arr, key) => {
+      routesMap.forEach((routeArr, location) => {
         // デフォルトの山情報にidとlocationを設定
-        arr.forEach(obj => {
-          obj.id = obj.id ? obj.id : key + "-" + obj.index;
-          obj.location = key;
+        routeArr.forEach(route => {
+          route.id = route.id ? route.id : location + "-" + route.index;
+          route.location = location;
 
-          const pref = obj.physical + "-" + obj.technological;
-
-          // TODO:リファクタリング
+          // マトリクス用のマップを作成
+          const pref = route.physical + "-" + route.technological;
           if(!matrixMap.has(pref)) {
             matrixMap.set(pref, new Map());
           }
-          if(!matrixMap.get(pref).has("all")) {
-            matrixMap.get(pref).set("all", [obj]);
-          } else {
-            matrixMap.get(pref).set(
-              "all", 
-              [...matrixMap.get(pref).get("all"), obj]
-            );
-          }
-          if(!matrixMap.get(pref).has(key)) {
-            matrixMap.get(pref).set(key, [obj]);
-          } else {
-            matrixMap.get(pref).set(
-              key, 
-              [...matrixMap.get(pref).get(key), obj]
-            );
-          }
+          const gradeingMap = matrixMap.get(pref);
+          addRouteToMatrixMap(gradeingMap, "all", route);
+          addRouteToMatrixMap(gradeingMap, location, route);
         });
-        allArr.push(...arr);
+        allArr.push(...routeArr);
       });
       routesMap.set("all", allArr);
 
-      // ステートの登頂チェックにデータを格納
+      // ステートのルート情報にデータを格納
       commit('setRouteMap', routesMap);
       commit('setMatrixMap', matrixMap);
     },
@@ -155,3 +141,15 @@ export default new Vuex.Store({
     matrixMap: state => state.matrixMap,
   }
 })
+
+
+const addRouteToMatrixMap = ((map, key, route) => {
+  if(!map.has(key)) {
+    map.set(key, [route]);
+  } else {
+    map.set(
+      key, 
+      [...map.get(key), route]
+    );
+  }  
+});

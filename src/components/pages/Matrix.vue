@@ -129,29 +129,31 @@ export default {
     },
     methods: {
       createRouteList(physical, technological) {
-        // TODO:リファクタリング
-        const pref = physical + "-" + technological;
+        // ストアから体力と技術難易度に一致するルートのマップを取得
+        const routeListMap = this.matrixMap.get(physical + "-" + technological);
         let result = [];
-        if (!this.matrixMap.size || !this.matrixMap.has(pref)) {
+
+        // リストがない場合は空配列を返す
+        if (!this.matrixMap.size || !routeListMap) {
           return result;
         }
 
+        // 地域でフィルタ
         if(this.locationValue.length) {
-          this.locationValue.forEach(val => {
-            if(this.matrixMap.get(pref).has(val)) {
-              result = [...result, ...this.matrixMap.get(pref).get(val)];
+          this.locationValue.forEach(location => {
+            if(routeListMap.has(location)) {
+              result = [...result, ...routeListMap.get(location)];
             }
           });
         } else {
-          result = this.matrixMap.get(pref).get("all");
+          result = routeListMap.get("all");
         }
 
-        // 登頂チェック
-        const climbedIdSet = this.climbedIdSet;
+        // 登頂チェックでフィルタ
         if(this.climbedValue.length == 1 && this.climbedValue[0] == "on") {
-          result = result.filter(val => climbedIdSet.has(val.id));
+          result = result.filter(val => this.climbedIdSet.has(val.id));
         } else if(this.climbedValue.length == 1 && this.climbedValue[0] == "off") {
-          result = result.filter(val => !climbedIdSet.has(val.id));
+          result = result.filter(val => !this.climbedIdSet.has(val.id));
         }
         return result
       }
