@@ -24,8 +24,11 @@
                 chips
                 dense
                 :items="climbedItem"
-                label="登頂済み"
-              ></v-select>
+                item-text="name"
+                item-value="id"
+                prepend-inner-icon="mdi-trophy"
+              >
+              </v-select>
             </v-col>
             <v-col cols="1"></v-col>
           </v-row>
@@ -105,13 +108,16 @@ export default {
         {id:"other", name:"その他"}
       ],
       climbedValue: [],
-      climbedItem: ["on", "off"]
+      climbedItem: [
+        {id:"on", name:'on'},
+        {id:"off", name:'off'},
+      ]
     }),
     components: {
       CardRouteListVue
     },
     computed: {
-      ...mapGetters(["matrixMap"]),
+      ...mapGetters(["matrixMap", "climbedIdSet"]),
     },
     mounted() {
       // stateの値の変更を検知する（ミューテーション実行後の値を取得）
@@ -124,21 +130,30 @@ export default {
     methods: {
       createRouteList(physical, technological) {
         // TODO:リファクタリング
-        const pref = physical + "-" + technological;        
+        const pref = physical + "-" + technological;
+        let result = [];
         if (!this.matrixMap.size || !this.matrixMap.has(pref)) {
-          return [];
+          return result;
         }
 
         if(this.locationValue.length) {
-          let routes = [];
           this.locationValue.forEach(val => {
             if(this.matrixMap.get(pref).has(val)) {
-              routes = [...routes, ...this.matrixMap.get(pref).get(val)];
+              result = [...result, ...this.matrixMap.get(pref).get(val)];
             }
           });
-          return routes;
+        } else {
+          result = this.matrixMap.get(pref).get("all");
         }
-        return this.matrixMap.get(pref).get("all");
+
+        // 登頂チェック
+        const climbedIdSet = this.climbedIdSet;
+        if(this.climbedValue.length == 1 && this.climbedValue[0] == "on") {
+          result = result.filter(val => climbedIdSet.has(val.id));
+        } else if(this.climbedValue.length == 1 && this.climbedValue[0] == "off") {
+          result = result.filter(val => !climbedIdSet.has(val.id));
+        }
+        return result
       }
     }
   }
