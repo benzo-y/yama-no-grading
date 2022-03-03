@@ -24,7 +24,10 @@
             :key="`${phy}${tech}`"
             class="col-11-5"
           >
-            <CardRouteListVue :routes="createRouteList(phy, tech)"/>
+            <CardRouteListVue
+              :routes="createRouteList(phy, tech)"
+              :getSelectedRouteId.sync="dialog"
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -52,6 +55,17 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-dialog
+      v-model="dialog.isShow"
+      v-if="dialog.isShow"
+      width="75%"
+    >
+      <CardRouteForm
+        mode="read"
+        :id="dialog.id"
+        :clickClose.sync="dialog.isShow"
+      />
+    </v-dialog>
   </v-container>
 </template>
 
@@ -59,6 +73,7 @@
 <script>
 import CardRouteListVue from "./matrix/CardRouteList.vue";
 import CardFilterVue from "./matrix/CardFilter.vue";
+import CardRouteForm from "../parts/CardRouteForm.vue"
 import { mapGetters } from "vuex"
 
 export default {
@@ -69,10 +84,15 @@ export default {
       technological: ["A", "B", "C", "D", "E"],
       locationValue: [],
       climbedValue: [],
+      dialog: {
+        isShow: false,
+        id: null,
+      }
     }),
     components: {
       CardRouteListVue,
       CardFilterVue,
+      CardRouteForm,
     },
     computed: {
       ...mapGetters(["matrixMap", "climbedIdSet"]),

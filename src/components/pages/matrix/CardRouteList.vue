@@ -7,25 +7,17 @@
         </v-list-item-icon>
         <v-list-item-content
           style="padding: 0;"
-          @click="showDialog(item.id)"
+          @click="clickListItem(item.id)"
         >
           {{item.name}}
         </v-list-item-content>
       </v-list-item>
     </v-list>
-    <v-dialog
-      v-model="dialog"
-      v-if="dialog"
-      width="75%"
-    >
-      <CardRouteForm :id="showRouteId" mode="read" :clickClose.sync="dialog"/>
-    </v-dialog>
   </v-card>
 </template>
 
 <script>
 import IconClimbed from "../../parts/IconClimbed.vue"
-import CardRouteForm from "../../parts/CardRouteForm.vue"
 export default {
   data: () => ({
     dialog: false,
@@ -36,12 +28,10 @@ export default {
   },
   components: {
     IconClimbed,
-    CardRouteForm,
   },
   methods: {
-    showDialog(id) {
-      this.dialog = true;
-      this.showRouteId = id;
+    clickListItem(id) {
+      this.$emit('update:getSelectedRouteId', {isShow: true, id});
     },
   },
 }
