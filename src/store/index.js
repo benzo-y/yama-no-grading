@@ -139,6 +139,10 @@ export default new Vuex.Store({
     getHasClimbedById: state => id => state.climbedIdSet.has(id),
     climbedIdSet: state => state.climbedIdSet,
     matrixMap: state => state.matrixMap,
+    getRouteById: state => id => {
+      const allRouteArr = state.routeMap.get("all");
+      return allRouteArr.find(val => val.id === id );
+    }
   }
 })
 

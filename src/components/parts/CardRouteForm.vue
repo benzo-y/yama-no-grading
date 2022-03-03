@@ -21,13 +21,13 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="justify-center">
-      <v-btn>
+      <v-btn v-if="mode==='read'" @click="clickClose">
         戻る
       </v-btn>
-      <v-btn color="primary">
+      <v-btn color="primary" v-if="mode==='edit'">
         保存
       </v-btn>
-      <v-btn>
+      <v-btn v-if="mode==='edit'">
         キャンセル
       </v-btn>
     </v-card-actions>
@@ -37,6 +37,7 @@
 <script>
 
 import IconClimbed from "./IconClimbed.vue"
+import { mapGetters } from "vuex"
 
 export default {
   components: {IconClimbed},
@@ -58,25 +59,23 @@ export default {
       route_coef : 'ルート係数',
       location : '地域',
     },
-    route: {
-      id : 'shinshu-1',
-      name : 'ダミー ルート名',
-      physical : 1,
-      technological : 'A',
-      start_point_name : 'ダミー スタート地点',
-      start_point_elevation : 1234,
-      highest_point_name : 'ダミー 最高地点',
-      highest_point_elevation : 1234,
-      end_point_name : 'ダミー ゴール名',
-      end_point_elevation : 1234,
-      course_time : '12:34',
-      length : 12,
-      cum_up_elevation : 1234,
-      cum_down_elevation : 1234,
-      route_coef : 1.2,
-      location : '信州',
-    },
+    route: {},
     climbed: false
-  })
+  }),
+  props: {
+    id: {type: String},
+    mode: {type: String},
+  },
+  computed: {
+    ...mapGetters(["getRouteById"]),
+  },
+  created() {    
+    this.route = this.getRouteById(this.id);
+  },
+  methods: {
+    clickClose() {
+      this.$emit('update:clickClose', false);
+    },
+  },
 }
 </script>

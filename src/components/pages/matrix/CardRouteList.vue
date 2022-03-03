@@ -2,33 +2,24 @@
   <v-card height="100%">
     <v-list dense >
       <v-list-item v-for="item in this.routes" :key="item.id" style="min-height: auto;">
-        <v-dialog
-          v-model="dialog"
-          width="75%"
+        <v-list-item-icon class="mr-2 my-1">
+          <IconClimbed :id="item.id"/>
+        </v-list-item-icon>
+        <v-list-item-content
+          style="padding: 0;"
+          @click="showDialog(item.id)"
         >
-          <template v-slot:activator="{ on, attrs }">
-            <v-list-item-icon class="mr-2 my-1">
-              <IconClimbed :id="item.id"/>
-            </v-list-item-icon>
-            <v-list-item-content
-              style="padding: 0;"
-              v-bind="attrs"
-              v-on="on"
-            >
-              {{item.name}}
-            </v-list-item-content>
-          </template>
-          <CardRouteForm/>
-          <v-btn
-            color="primary"
-            text
-            @click="dialog = false"
-          >
-            閉じる
-          </v-btn>
-        </v-dialog>
+          {{item.name}}
+        </v-list-item-content>
       </v-list-item>
     </v-list>
+    <v-dialog
+      v-model="dialog"
+      v-if="dialog"
+      width="75%"
+    >
+      <CardRouteForm :id="showRouteId" mode="read" :clickClose.sync="dialog"/>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -37,7 +28,8 @@ import IconClimbed from "../../parts/IconClimbed.vue"
 import CardRouteForm from "../../parts/CardRouteForm.vue"
 export default {
   data: () => ({
-    dialog: false
+    dialog: false,
+    showRouteId: null,
   }),
   props: {
     routes: {type: Array},
@@ -45,6 +37,12 @@ export default {
   components: {
     IconClimbed,
     CardRouteForm,
+  },
+  methods: {
+    showDialog(id) {
+      this.dialog = true;
+      this.showRouteId = id;
+    },
   },
 }
 
