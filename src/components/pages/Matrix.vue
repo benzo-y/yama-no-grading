@@ -10,18 +10,7 @@
       <v-col cols="12">
         <v-row v-for="phy in physical" :key="phy.grade">
           <v-col cols="1">
-            <v-tooltip right>
-              <template v-slot:activator="{ on, attrs }">
-                <v-card
-                  height="100%"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  {{phy.body}}
-                </v-card>
-              </template>
-              <span>{{phy.tooltip}}</span>
-            </v-tooltip>
+            <TooltipAxis :item="phy"/>
           </v-col>
           <v-col
             v-for="tech in technological"
@@ -45,18 +34,7 @@
             :key="tech.grade"
             class="col-11-5"
           >
-            <v-tooltip top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-card
-                  height="100%"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  {{tech.body}}
-                </v-card>
-              </template>
-              <span v-html="tech.tooltip"></span>
-            </v-tooltip>
+            <TooltipAxis :item="tech"/>
           </v-col>
         </v-row>
       </v-col>
@@ -80,6 +58,7 @@
 import CardRouteListVue from "./matrix/CardRouteList.vue";
 import CardFilterVue from "./matrix/CardFilter.vue";
 import CardRouteForm from "../parts/CardRouteForm.vue"
+import TooltipAxis from "./matrix/TooltipAxis.vue";
 import { MATRIX_AXIS } from "../../const/const";
 import { mapGetters } from "vuex"
 
@@ -100,6 +79,7 @@ export default {
       CardRouteListVue,
       CardFilterVue,
       CardRouteForm,
+      TooltipAxis
     },
     computed: {
       ...mapGetters(["matrixMap", "climbedIdSet"]),
