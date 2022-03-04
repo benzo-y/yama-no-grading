@@ -5,8 +5,15 @@
         height="100%"
         v-bind="attrs"
         v-on="on"
-      >
-        {{item.body}}
+      > 
+        <v-layout
+          justify-center
+          align-center
+          fill-height
+          class="py-2"
+        >
+          {{item.body}}
+        </v-layout>
       </v-card>
     </template>
     <span v-html="item.tooltip"></span>
