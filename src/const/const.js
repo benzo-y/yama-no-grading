@@ -59,4 +59,18 @@ const MATRIX_AXIS = {
   ],
 };
 
-export { MATRIX_AXIS };
+const LOCATION = {
+  shinshu: "長野県",
+  yamanashi: "山梨県",
+  shizuoka: "静岡県",
+  gunma: "群馬県",
+  gifu: "岐阜県",
+  tochigi: "栃木券",
+  ishizuchisankei: "石鎚山系",
+  akita: "秋田県",
+  toyama: "富山県",
+  hyaku: "百名山",
+  other: "その他",
+}
+
+export { MATRIX_AXIS, LOCATION };
