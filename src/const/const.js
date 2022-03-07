@@ -59,7 +59,7 @@ const MATRIX_AXIS = {
   ],
 };
 
-const LOCATION = {
+const PUBLISHER = {
   shinshu: "長野県",
   yamanashi: "山梨県",
   shizuoka: "静岡県",
@@ -73,4 +73,4 @@ const LOCATION = {
   other: "その他",
 }
 
-export { MATRIX_AXIS, LOCATION };
+export { MATRIX_AXIS, PUBLISHER };

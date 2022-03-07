@@ -79,7 +79,7 @@
           { text: '累計登り標高差', value: 'cum_up_elevation' },
           { text: '累計下り標高差', value: 'cum_down_elevation' },
           { text: 'ルート係数', value: 'route_coef' },
-          { text: '地域', value: 'location' },
+          { text: '発行元', value: 'publisher' },
           { text: '登頂チェック', value: 'climbed' },
           { text: 'アクション', value: 'action' },
         ]

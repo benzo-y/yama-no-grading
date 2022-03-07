@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12">
         <CardFilterVue
-          :changeLocation.sync="locationValue"
+          :changePublisher.sync="publisherValue"
           :changeClimbed.sync="climbedValue"
         />
       </v-col>
@@ -68,7 +68,7 @@ export default {
       matrix: new Map(),
       physical: MATRIX_AXIS.physical,
       technological: MATRIX_AXIS.technological,
-      locationValue: [],
+      publisherValue: [],
       climbedValue: [],
       dialog: {
         isShow: false,
@@ -103,11 +103,11 @@ export default {
           return result;
         }
 
-        // 地域でフィルタ
-        if(this.locationValue.length) {
-          this.locationValue.forEach(location => {
-            if(routeListMap.has(location)) {
-              result = [...result, ...routeListMap.get(location)];
+        // 発行元でフィルタ
+        if(this.publisherValue.length) {
+          this.publisherValue.forEach(publisher => {
+            if(routeListMap.has(publisher)) {
+              result = [...result, ...routeListMap.get(publisher)];
             }
           });
         } else {

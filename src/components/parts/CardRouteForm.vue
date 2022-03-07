@@ -57,7 +57,7 @@ export default {
       cum_up_elevation : '累計登り標高差',
       cum_down_elevation : '累計下り標高差',
       route_coef : 'ルート係数',
-      location : '地域',
+      publisher : '発行元',
     },
     route: {},
     climbed: false

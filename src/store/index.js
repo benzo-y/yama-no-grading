@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import { GoogleAuthProvider, getAuth, signInWithRedirect, signOut } from "firebase/auth";
 import { doc, getDoc, getDocs, setDoc, updateDoc, collection, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db } from '../plugins/firebase';
-import { LOCATION } from '../const/const'
+import { PUBLISHER } from '../const/const'
 
 // ダミーデータ
 import dummy from '../dummyData/dummy.json';
@@ -102,17 +102,17 @@ export default new Vuex.Store({
       routeDocs.forEach(doc => {
         let data = doc.data();
         data.id = doc.id;
-        data.locationKey = "other";
+        data.publisherKey = "other";
         othreArr.push(data);
       });
 
       // すべて用の配列とマトリクス用のマップを作成
       const allArr = [];
-      routesMap.forEach((routeArr, locationKey) => {
-        // デフォルトの山情報にidとlocationKeyを設定
+      routesMap.forEach((routeArr, publisherKey) => {
+        // デフォルトの山情報にidとpublisherKeyを設定
         routeArr.forEach(route => {
-          route.id = route.id ? route.id : locationKey + "-" + route.index;
-          route.location = route.location ? route.location : LOCATION[locationKey];
+          route.id = route.id ? route.id : publisherKey + "-" + route.index;
+          route.publisher = route.publisher ? route.publisher : PUBLISHER[publisherKey];
 
           // マトリクス用のマップを作成
           const pref = route.physical + "-" + route.technological;
@@ -121,7 +121,7 @@ export default new Vuex.Store({
           }
           const gradeingMap = matrixMap.get(pref);
           addRouteToMatrixMap(gradeingMap, "all", route);
-          addRouteToMatrixMap(gradeingMap, locationKey, route);
+          addRouteToMatrixMap(gradeingMap, publisherKey, route);
         });
         allArr.push(...routeArr);
       });

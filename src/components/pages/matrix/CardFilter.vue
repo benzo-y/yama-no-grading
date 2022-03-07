@@ -4,15 +4,15 @@
       <v-col cols="1"></v-col>
       <v-col cols="8">
         <v-select
-          v-model="locationValue"
+          v-model="publisherValue"
           multiple
           chips
           dense
-          :items="locationItem"
+          :items="publisherItem"
           item-text="name"
           item-value="id"
-          label="地域"
-          @change="changeLocation"
+          label="発行元"
+          @change="changePublisher"
         ></v-select>
       </v-col>
       <v-col cols="2">
@@ -37,7 +37,7 @@
 <script>
 export default {
   data: () => ({
-      locationItem: [
+      publisherItem: [
         {id:"shinshu", name:"信州"},
         {id:"yamanashi", name:"山梨"},
         {id:"shizuoka", name:"静岡"},
@@ -54,12 +54,12 @@ export default {
         {id:"on", name:'on'},
         {id:"off", name:'off'},
       ],
-      locationValue: [],
+      publisherValue: [],
       climbedValue: [],
   }),
   methods: {
-    changeLocation () {
-      this.$emit('update:changeLocation', this.locationValue)
+    changePublisher () {
+      this.$emit('update:changePublisher', this.publisherValue)
     },
     changeClimbed () {
       this.$emit('update:changeClimbed', this.climbedValue)
