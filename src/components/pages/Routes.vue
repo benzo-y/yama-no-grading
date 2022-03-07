@@ -134,8 +134,8 @@ export default {
         { text: '累計下り標高差', value: 'cum_down_elevation' },
         { text: 'ルート係数', value: 'route_coef' },
         { text: '発行元', value: 'publisher' },
-        { text: '登頂チェック', value: 'climbed' },
-        { text: 'アクション', value: 'actions' },
+        { text: '登頂チェック', value: 'climbed', sortable: false },
+        { text: 'アクション', value: 'actions', sortable: false },
       ]
     },
   },
