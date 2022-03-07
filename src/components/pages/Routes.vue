@@ -21,6 +21,9 @@
         :search="search"
         :custom-filter="filterOnlyCapsText"
       >
+        <template v-slot:[`item.climbed`]="{ item }">
+          <IconClimbed :id="item.id"/>
+        </template>
         <template v-slot:[`body.append`]>
           <tr>
             <td></td>
@@ -40,6 +43,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import IconClimbed from "../parts/IconClimbed.vue";
 
   export default {
     data: () => ({
@@ -47,6 +51,9 @@ import { mapGetters } from "vuex";
       physical: '',
       routes: [],
     }),
+    components: {
+      IconClimbed,
+    },
     computed: {
       ...mapGetters(["routeMap"]),
       headers () {
