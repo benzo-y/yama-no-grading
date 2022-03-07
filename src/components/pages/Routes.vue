@@ -47,11 +47,13 @@
           <tr>
             <td></td>
             <td>
-              <v-text-field
-                v-model="physical"
-                type="number"
-                label="Less than"
-              ></v-text-field>
+              <v-select
+                :items="filter.physical.items"
+                item-text="name"
+                item-value="value"
+                v-model="filter.physical.value"
+              >
+              </v-select>
             </td>
           </tr>
         </template>
@@ -67,7 +69,35 @@ import IconClimbed from "../parts/IconClimbed.vue";
 export default {
   data: () => ({
     search: '',
-    physical: '',
+    filter: {
+      physical: {
+        items: [
+          {value: null, name: ""},
+          {value: 1, name: "1"},
+          {value: 2, name: "2"},
+          {value: 3, name: "3"},
+          {value: 4, name: "4"},
+          {value: 5, name: "5"},
+          {value: 6, name: "6"},
+          {value: 7, name: "7"},
+          {value: 8, name: "8"},
+          {value: 9, name: "9"},
+          {value: 10, name: "10"},
+        ],
+        selected: null,
+      },
+      technological: '',
+      start_point_elevation: '',
+      highest_point_elevation: '',
+      end_point_elevation: '',
+      course_time: '',
+      length: '',
+      cum_up_elevation: '',
+      cum_down_elevation: '',
+      route_coef: '',
+      publisher: '',
+      climbed: '',
+    },
     routes: [],
   }),
   components: {
@@ -87,9 +117,8 @@ export default {
           text: '体力度',
           value: 'physical',
           filter: value => {
-            if (!this.physical) return true
-
-            return value < parseInt(this.physical)
+            if (!this.filter.physical.selected) return true
+            return value === parseInt(this.filter.physical.selected)
           },
         },
         { text: '技術的難易度', value: 'technological' },
