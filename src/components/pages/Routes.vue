@@ -17,8 +17,8 @@
       <v-data-table
         :headers="headers"
         :items="routes"
+        item-key="id"
         :search="search"
-        item-key="name"
         :custom-filter="filterOnlyCapsText"
       >
         <template v-slot:[`body.append`]>
