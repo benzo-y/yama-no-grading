@@ -22,7 +22,26 @@
         :custom-filter="filterOnlyCapsText"
       >
         <template v-slot:[`item.climbed`]="{ item }">
-          <IconClimbed :id="item.id"/>
+          <v-layout justify-center>
+            <IconClimbed :id="item.id" justify="center"/>
+          </v-layout>
+        </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-layout
+            v-if="item.publisherKey==='other'"
+            justify-center
+          >
+            <v-icon
+              class="mr-1"
+            >
+              mdi-pencil
+            </v-icon>
+            <v-icon
+              class="ml-1"
+            >
+              mdi-delete
+            </v-icon>
+          </v-layout>
         </template>
         <template v-slot:[`body.append`]>
           <tr>
@@ -87,7 +106,7 @@ import IconClimbed from "../parts/IconClimbed.vue";
           { text: 'ルート係数', value: 'route_coef' },
           { text: '発行元', value: 'publisher' },
           { text: '登頂チェック', value: 'climbed' },
-          { text: 'アクション', value: 'action' },
+          { text: 'アクション', value: 'actions' },
         ]
       },
     },
