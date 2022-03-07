@@ -143,7 +143,8 @@ export default new Vuex.Store({
     getRouteById: state => id => {
       const allRouteArr = state.routeMap.get("all");
       return allRouteArr.find(val => val.id === id );
-    }
+    },
+    routeMap: state => state.routeMap,
   }
 })
 

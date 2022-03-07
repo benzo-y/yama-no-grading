@@ -39,17 +39,16 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
   export default {
     data: () => ({
       search: '',
       physical: '',
-      routes: [
-        {"index":1,"name":"大朝日岳（古寺鉱泉口）","physical":5,"technological":"B","start_point_name":"古寺鉱泉口","start_point_elevation":675,"highest_point_name":"大朝日岳","highest_point_elevation":1871,"end_point_name":"古寺鉱泉口","end_point_elevation":675,"course_time":10.3,"length":18.1,"cum_up_elevation":2.02,"cum_down_elevation":2.02,"route_coef":45.3,"location":"山形県","id":"shinshu-1"},
-        {"index":2,"name":"【周】大朝日岳（朝日鉱泉口）＜中ツル尾根・鳥原山＞","physical":5,"technological":"B","start_point_name":"朝日鉱泉","start_point_elevation":555,"highest_point_name":"大朝日岳","highest_point_elevation":1871,"end_point_name":"朝日鉱泉","end_point_elevation":555,"course_time":11.5,"length":19.5,"cum_up_elevation":1.87,"cum_down_elevation":1.87,"route_coef":46.4,"location":"山形県","id":"shinshu-2"},
-        {"index":3,"name":"【縦】西吾妻山（リフト終点）＜かもしか展望台・若女平＞","physical":2,"technological":"B","start_point_name":"リフト終点","start_point_elevation":1820,"highest_point_name":"西吾妻山","highest_point_elevation":2035,"end_point_name":"若女平登山口","end_point_elevation":863,"course_time":4.8,"length":9.1,"cum_up_elevation":0.54,"cum_down_elevation":1.5,"route_coef":17.7,"location":"山形県","id":"shinshu-3"},
-      ],
+      routes: [],
     }),
     computed: {
+      ...mapGetters(["routeMap"]),
       headers () {
         return [
           {
@@ -84,6 +83,15 @@
           { text: 'アクション', value: 'action' },
         ]
       },
+    },
+    mounted() {
+      this.routes = this.routeMap.get("all");
+      // stateの値の変更を検知する（ミューテーション実行後の値を取得）
+      this.$store.subscribe((mutation) => {
+        if (mutation.type === 'setRouteMap') {
+          this.routes = this.routeMap.get("all");
+        }
+      });
     },
     methods: {
       filterOnlyCapsText (value, search) {
