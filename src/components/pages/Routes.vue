@@ -51,7 +51,7 @@
                 :items="filter.physical.items"
                 item-text="name"
                 item-value="value"
-                v-model="filter.physical.value"
+                v-model="filter.physical.selected"
               >
               </v-select>
             </td>
