@@ -55,6 +55,15 @@
               >
               </v-select>
             </td>
+            <td>
+              <v-select
+                :items="filter.technological.items"
+                item-text="name"
+                item-value="value"
+                v-model="filter.technological.selected"
+              >
+              </v-select>
+            </td>
           </tr>
         </template>
       </v-data-table>
@@ -72,7 +81,7 @@ export default {
     filter: {
       physical: {
         items: [
-          {value: null, name: ""},
+          {value: 0, name: ""},
           {value: 1, name: "1"},
           {value: 2, name: "2"},
           {value: 3, name: "3"},
@@ -86,7 +95,17 @@ export default {
         ],
         selected: null,
       },
-      technological: '',
+      technological: {
+        items: [
+          {value: 0, name: ""},
+          {value: 1, name: "A"},
+          {value: 2, name: "B"},
+          {value: 3, name: "C"},
+          {value: 4, name: "D"},
+          {value: 5, name: "E"},
+        ],
+        selected: null,
+      },
       start_point_elevation: '',
       highest_point_elevation: '',
       end_point_elevation: '',
@@ -116,12 +135,13 @@ export default {
         {
           text: '体力度',
           value: 'physical',
-          filter: value => {
-            if (!this.filter.physical.selected) return true
-            return value === parseInt(this.filter.physical.selected)
-          },
+          filter: value => this.selectFilter(value, 'physical'),
         },
-        { text: '技術的難易度', value: 'technological' },
+        { 
+          text: '技術的難易度',
+          value: 'technological',
+          filter: value => this.selectFilter(value, 'technological'),
+        },
         { text: 'スタート地点（地名）', value: 'start_point_name' },
         { text: 'スタート地点（標高）', value: 'start_point_elevation' },
         { text: 'ルート最高地点（地名）', value: 'highest_point_name' },
@@ -154,6 +174,12 @@ export default {
         search != null &&
         typeof value === 'string' &&
         value.toString().toLocaleUpperCase().indexOf(search) !== -1
+    },
+    // 各項目のフィルタ：セレクトで一致したものを表示する
+    selectFilter(value, key) {
+      let target = this.filter[key];
+      if (!target.selected) return true;
+      return value.toString() === target.items[target.selected].name;
     },
   },
 }
