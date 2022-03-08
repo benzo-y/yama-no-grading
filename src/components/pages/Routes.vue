@@ -15,7 +15,7 @@
         ></v-text-field>
       </v-card-actions>
       <v-data-table
-        :headers="headers"
+        :headers="headersSetFilter"
         :items="routes"
         item-key="id"
         :search="search"
@@ -45,22 +45,13 @@
         </template>
         <template v-slot:[`body.append`]>
           <tr>
-            <td></td>
-            <td>
+            <td v-for="header,index in headers" :key="index">
               <v-select
-                :items="filter.physical.items"
+                v-if="'filter' in header" 
+                :items="filter[header.value].items"
                 item-text="name"
                 item-value="value"
-                v-model="filter.physical.selected"
-              >
-              </v-select>
-            </td>
-            <td>
-              <v-select
-                :items="filter.technological.items"
-                item-text="name"
-                item-value="value"
-                v-model="filter.technological.selected"
+                v-model="filter[header.value].selected"
               >
               </v-select>
             </td>
@@ -118,45 +109,93 @@ export default {
       climbed: '',
     },
     routes: [],
+    headers: [
+      {
+        text: 'ルート名称',
+        align: 'start',
+        sortable: false,
+        value: 'name',
+      },
+      {
+        text: '体力度',
+        value: 'physical',
+        filterType: "selectFilter",
+      },
+      { 
+        text: '技術的難易度',
+        value: 'technological',
+        filterType: "selectFilter",
+      },
+      { text: 'スタート地点（地名）', value: 'start_point_name' },
+      { text:
+        'スタート地点（標高）',
+        value: 'start_point_elevation',
+        filterType: "selectFilter",
+      },
+      { text: 'ルート最高地点（地名）', value: 'highest_point_name' },
+      { text:
+        'ルート最高地点（標高）',
+        value: 'highest_point_elevation',
+        filterType: "selectFilter",
+      },
+      { text: '終了地点（地名）', value: 'end_point_name' },
+      {
+        text: '終了地点（標高）',
+        value: 'end_point_elevation',
+        filterType: "selectFilter",
+        },
+      {
+        text: 'コースタイム',
+        value: 'course_time',
+        filterType: "selectFilter",
+        },
+      {
+        text: 'ルート長',
+        value: 'length',
+        filterType: "selectFilter",
+        },
+      {
+        text: '累計登り標高差',
+        value: 'cum_up_elevation',
+        filterType: "selectFilter",
+        },
+      {
+        text: '累計下り標高差',
+        value: 'cum_down_elevation',
+        filterType: "selectFilter",
+      },
+      {
+        text: 'ルート係数',
+        value: 'route_coef',
+        filterType: "selectFilter",
+      },
+      {
+        text: '発行元',
+        value: 'publisher',
+        filterType: "selectPub",
+      },
+      {
+        text: '登頂チェック',
+        value: 'climbed',
+        sortable: false,
+        filterType: "selectClimbed",
+      },
+      { text: 'アクション', value: 'actions', sortable: false },
+    ],
   }),
   components: {
     IconClimbed,
   },
   computed: {
     ...mapGetters(["routeMap"]),
-    headers () {
-      return [
-        {
-          text: 'ルート名称',
-          align: 'start',
-          sortable: false,
-          value: 'name',
-        },
-        {
-          text: '体力度',
-          value: 'physical',
-          filter: value => this.selectFilter(value, 'physical'),
-        },
-        { 
-          text: '技術的難易度',
-          value: 'technological',
-          filter: value => this.selectFilter(value, 'technological'),
-        },
-        { text: 'スタート地点（地名）', value: 'start_point_name' },
-        { text: 'スタート地点（標高）', value: 'start_point_elevation' },
-        { text: 'ルート最高地点（地名）', value: 'highest_point_name' },
-        { text: 'ルート最高地点（標高）', value: 'highest_point_elevation' },
-        { text: '終了地点（地名）', value: 'end_point_name' },
-        { text: '終了地点（標高）', value: 'end_point_elevation' },
-        { text: 'コースタイム', value: 'course_time' },
-        { text: 'ルート長', value: 'length' },
-        { text: '累計登り標高差', value: 'cum_up_elevation' },
-        { text: '累計下り標高差', value: 'cum_down_elevation' },
-        { text: 'ルート係数', value: 'route_coef' },
-        { text: '発行元', value: 'publisher' },
-        { text: '登頂チェック', value: 'climbed', sortable: false },
-        { text: 'アクション', value: 'actions', sortable: false },
-      ]
+    headersSetFilter() {
+      console.log("hoge");
+      this.headers.forEach(el => {
+        if (el.filterType === "selectFilter") {
+          el.filter = value => this.selectFilter(value, el.value);
+        }
+      });
+      return this.headers;
     },
   },
   mounted() {
