@@ -66,6 +66,12 @@
 import { mapGetters } from "vuex";
 import IconClimbed from "../parts/IconClimbed.vue";
 
+const ELEVATION_INCREMENTS = 500;
+const TIME_INCREMENTS = 10;
+const LENGTH_INCREMENTS = 10;
+const CUM_ELEVATION_INCREMENTS = 1;
+const ROUTE_COEF_INCREMENTS = 20;
+
 export default {
   data: () => ({
     search: '',
@@ -97,14 +103,108 @@ export default {
         ],
         selected: null,
       },
-      start_point_elevation: '',
-      highest_point_elevation: '',
-      end_point_elevation: '',
-      course_time: '',
-      length: '',
-      cum_up_elevation: '',
-      cum_down_elevation: '',
-      route_coef: '',
+      start_point_elevation: {
+        items: [
+          {value: 0, name: ""},
+          {value: 1, name: "0~500"},
+          {value: 2, name: "500~1000"},
+          {value: 3, name: "1000~1500"},
+          {value: 4, name: "1500~2000"},
+          {value: 5, name: "2000~2500"},
+          {value: 6, name: "2500~3000"},
+          {value: 7, name: "3000~3500"},
+          {value: 8, name: "3500~"},
+        ],
+        selected: null,
+      },
+      highest_point_elevation: {
+        items: [
+          {value: 0, name: ""},
+          {value: 1, name: "0~500"},
+          {value: 2, name: "500~1000"},
+          {value: 3, name: "1000~1500"},
+          {value: 4, name: "1500~2000"},
+          {value: 5, name: "2000~2500"},
+          {value: 6, name: "2500~3000"},
+          {value: 7, name: "3000~3500"},
+          {value: 8, name: "3500~"},
+        ],
+        selected: null,
+      },
+      end_point_elevation: {
+        items: [
+          {value: 0, name: ""},
+          {value: 1, name: "0~500"},
+          {value: 2, name: "500~1000"},
+          {value: 3, name: "1000~1500"},
+          {value: 4, name: "1500~2000"},
+          {value: 5, name: "2000~2500"},
+          {value: 6, name: "2500~3000"},
+          {value: 7, name: "3000~3500"},
+          {value: 8, name: "3500~"},
+        ],
+        selected: null,
+      },
+      course_time: {
+        items: [
+          {value: 0, name: ""},
+          {value: 1, name: "0~10"},
+          {value: 2, name: "10~20"},
+          {value: 3, name: "20~30"},
+          {value: 4, name: "30~40"},
+          {value: 5, name: "40~50"},
+          {value: 6, name: "50~"},
+        ],
+        selected: null,
+      },
+      length: {
+        items: [
+          {value: 0, name: ""},
+          {value: 1, name: "0~10"},
+          {value: 2, name: "10~20"},
+          {value: 3, name: "20~30"},
+          {value: 4, name: "30~40"},
+          {value: 5, name: "40~50"},
+          {value: 6, name: "50~"},
+        ],
+        selected: null,
+      },
+      cum_up_elevation: {
+        items: [
+          {value: 0, name: ""},
+          {value: 1, name: "0~1"},
+          {value: 2, name: "1~2"},
+          {value: 3, name: "2~3"},
+          {value: 4, name: "3~4"},
+          {value: 5, name: "4~5"},
+          {value: 6, name: "5~"},
+        ],
+        selected: null,
+      },
+      cum_down_elevation: {
+        items: [
+          {value: 0, name: ""},
+          {value: 1, name: "0~1"},
+          {value: 2, name: "1~2"},
+          {value: 3, name: "2~3"},
+          {value: 4, name: "3~4"},
+          {value: 5, name: "4~5"},
+          {value: 6, name: "5~"},
+        ],
+        selected: null,
+      },
+      route_coef: {
+        items: [
+          {value: 0, name: ""},
+          {value: 1, name: "0~20"},
+          {value: 2, name: "20~40"},
+          {value: 3, name: "40~60"},
+          {value: 4, name: "60~80"},
+          {value: 5, name: "80~100"},
+          {value: 6, name: "100~"},
+        ],
+        selected: null,
+      },
       publisher: '',
       climbed: '',
     },
@@ -119,55 +219,55 @@ export default {
       {
         text: '体力度',
         value: 'physical',
-        filterType: "selectFilter",
+        filterType: "filterGrade",
       },
       { 
         text: '技術的難易度',
         value: 'technological',
-        filterType: "selectFilter",
+        filterType: "filterGrade",
       },
       { text: 'スタート地点（地名）', value: 'start_point_name' },
       { text:
         'スタート地点（標高）',
         value: 'start_point_elevation',
-        filterType: "selectFilter",
+        filterType: "filterElevation",
       },
       { text: 'ルート最高地点（地名）', value: 'highest_point_name' },
       { text:
         'ルート最高地点（標高）',
         value: 'highest_point_elevation',
-        filterType: "selectFilter",
+        filterType: "filterElevation",
       },
       { text: '終了地点（地名）', value: 'end_point_name' },
       {
         text: '終了地点（標高）',
         value: 'end_point_elevation',
-        filterType: "selectFilter",
+        filterType: "filterElevation",
         },
       {
         text: 'コースタイム',
         value: 'course_time',
-        filterType: "selectFilter",
+        filterType: "filterTime",
         },
       {
         text: 'ルート長',
         value: 'length',
-        filterType: "selectFilter",
+        filterType: "filterLength",
         },
       {
         text: '累計登り標高差',
         value: 'cum_up_elevation',
-        filterType: "selectFilter",
+        filterType: "filterCumElevation",
         },
       {
         text: '累計下り標高差',
         value: 'cum_down_elevation',
-        filterType: "selectFilter",
+        filterType: "filterCumElevation",
       },
       {
         text: 'ルート係数',
         value: 'route_coef',
-        filterType: "selectFilter",
+        filterType: "filterRouteCoef",
       },
       {
         text: '発行元',
@@ -189,10 +289,26 @@ export default {
   computed: {
     ...mapGetters(["routeMap"]),
     headersSetFilter() {
-      console.log("hoge");
       this.headers.forEach(el => {
-        if (el.filterType === "selectFilter") {
-          el.filter = value => this.selectFilter(value, el.value);
+        switch(el.filterType) {
+          case "filterGrade":
+            el.filter = value => this.filterGrade(value, el.value);
+            break;
+          case "filterElevation":
+            el.filter = value => this.filterUseIncrements(value, el.value, ELEVATION_INCREMENTS);
+            break;
+          case "filterTime":
+            el.filter = value => this.filterUseIncrements(value, el.value, TIME_INCREMENTS);
+            break;
+          case "filterLength":
+            el.filter = value => this.filterUseIncrements(value, el.value, LENGTH_INCREMENTS);
+            break;
+          case "filterCumElevation":
+            el.filter = value => this.filterUseIncrements(value, el.value, CUM_ELEVATION_INCREMENTS);
+            break;
+          case "filterRouteCoef":
+            el.filter = value => this.filterUseIncrements(value, el.value, ROUTE_COEF_INCREMENTS);
+            break;
         }
       });
       return this.headers;
@@ -214,12 +330,20 @@ export default {
         typeof value === 'string' &&
         value.toString().toLocaleUpperCase().indexOf(search) !== -1
     },
-    // 各項目のフィルタ：セレクトで一致したものを表示する
-    selectFilter(value, key) {
+    // グレードのフィルタ：一致したものを表示する
+    filterGrade(value, key) {
       let target = this.filter[key];
       if (!target.selected) return true;
       return value.toString() === target.items[target.selected].name;
     },
+    // ○○～○○の範囲を選択するフィルタ：一致したものを表示する、0～10の場合は0以上、10以下
+    filterUseIncrements(value, key, constValue) {
+      let target = this.filter[key];
+      if (!target.selected) return true;
+      // 選択した値が配列の一番最後だった場合、「以上の」チェックだけする
+      if (target.selected === (target.items.length-1)) return constValue*(target.selected-1) <= value;
+      return constValue*(target.selected-1) <= value && value <= constValue*target.selected;
+    }
   },
 }
 </script>
