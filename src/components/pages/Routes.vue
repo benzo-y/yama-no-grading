@@ -65,6 +65,7 @@
 <script>
 import { mapGetters } from "vuex";
 import IconClimbed from "../parts/IconClimbed.vue";
+import { PUBLISHER } from "../../const/const";
 
 const ELEVATION_INCREMENTS = 500;
 const TIME_INCREMENTS = 10;
@@ -205,7 +206,23 @@ export default {
         ],
         selected: null,
       },
-      publisher: '',
+      publisher: {
+        items: [
+          {value: 0, name: ""},
+          {value: 1, name: PUBLISHER.shinshu},
+          {value: 2, name: PUBLISHER.yamanashi},
+          {value: 3, name: PUBLISHER.shizuoka},
+          {value: 4, name: PUBLISHER.gunma},
+          {value: 5, name: PUBLISHER.gifu},
+          {value: 6, name: PUBLISHER.tochigi},
+          {value: 7, name: PUBLISHER.ishizuchisankei},
+          {value: 8, name: PUBLISHER.akita},
+          {value: 9, name: PUBLISHER.toyama},
+          {value: 10, name: PUBLISHER.hyaku},
+          {value: 11, name: PUBLISHER.other},
+        ],
+        selected: null,
+      },
       climbed: '',
     },
     routes: [],
@@ -219,12 +236,12 @@ export default {
       {
         text: '体力度',
         value: 'physical',
-        filterType: "filterGrade",
+        filterType: "filterBySelectedName",
       },
       { 
         text: '技術的難易度',
         value: 'technological',
-        filterType: "filterGrade",
+        filterType: "filterBySelectedName",
       },
       { text: 'スタート地点（地名）', value: 'start_point_name' },
       { text:
@@ -272,7 +289,7 @@ export default {
       {
         text: '発行元',
         value: 'publisher',
-        filterType: "selectPub",
+        filterType: "filterBySelectedName",
       },
       {
         text: '登頂チェック',
@@ -291,8 +308,8 @@ export default {
     headersSetFilter() {
       this.headers.forEach(el => {
         switch(el.filterType) {
-          case "filterGrade":
-            el.filter = value => this.filterGrade(value, el.value);
+          case "filterBySelectedName":
+            el.filter = value => this.filterBySelectedName(value, el.value);
             break;
           case "filterElevation":
             el.filter = value => this.filterUseIncrements(value, el.value, ELEVATION_INCREMENTS);
@@ -331,7 +348,7 @@ export default {
         value.toString().toLocaleUpperCase().indexOf(search) !== -1
     },
     // グレードのフィルタ：一致したものを表示する
-    filterGrade(value, key) {
+    filterBySelectedName(value, key) {
       let target = this.filter[key];
       if (!target.selected) return true;
       return value.toString() === target.items[target.selected].name;
