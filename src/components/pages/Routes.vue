@@ -21,10 +21,13 @@
         :search="search"
         :custom-filter="filterOnlyCapsText"
       >
-        <template v-slot:[`item.climbed`]="{ item }">
-          <v-layout justify-center>
-            <IconClimbed :id="item.id" justify="center"/>
+        <template v-slot:[`header.climbed`]>
+          <v-layout>
+            <v-icon>mdi-trophy-outline</v-icon>
           </v-layout>
+        </template>
+        <template v-slot:[`item.climbed`]="{ item }">
+          <IconClimbed :id="item.id"/>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-layout
@@ -53,6 +56,14 @@
                 item-value="value"
                 v-model="filter[header.value].selected"
               >
+                <template v-if="header.value === 'climbed'" v-slot:[`selection`]="{ item }">
+                  <v-icon v-if="item.color" :color="item.color">mdi-trophy</v-icon>
+                  <span v-else></span>
+                </template>
+                <template v-if="header.value === 'climbed'" v-slot:[`item`]="{ item }">
+                  <v-icon v-if="item.color" :color="item.color">mdi-trophy</v-icon>
+                  <span v-else></span>
+                </template>
               </v-select>
             </td>
           </tr>
@@ -223,7 +234,14 @@ export default {
         ],
         selected: null,
       },
-      climbed: '',
+      climbed: {
+        items: [
+          {value: null},
+          {value: true, color: "yellow darken-3"},
+          {value: false, color: "grey lighten-1"},
+        ],
+        selected: null,
+      },
     },
     routes: [],
     headers: [
@@ -292,19 +310,19 @@ export default {
         filterType: "filterBySelectedName",
       },
       {
-        text: '登頂チェック',
+        text: '',
         value: 'climbed',
         sortable: false,
-        filterType: "selectClimbed",
+        filterType: "filterClimbed",
       },
-      { text: 'アクション', value: 'actions', sortable: false },
+      { text: '', value: 'actions', sortable: false },
     ],
   }),
   components: {
     IconClimbed,
   },
   computed: {
-    ...mapGetters(["routeMap"]),
+    ...mapGetters(["routeMap", "getHasClimbedById"]),
     headersSetFilter() {
       this.headers.forEach(el => {
         switch(el.filterType) {
@@ -325,6 +343,9 @@ export default {
             break;
           case "filterRouteCoef":
             el.filter = value => this.filterUseIncrements(value, el.value, ROUTE_COEF_INCREMENTS);
+            break;
+          case "filterClimbed":
+            el.filter = (value, search, item) => this.filterClimbed(el.value, item);
             break;
         }
       });
@@ -360,7 +381,16 @@ export default {
       // 選択した値が配列の一番最後だった場合、「以上の」チェックだけする
       if (target.selected === (target.items.length-1)) return constValue*(target.selected-1) <= value;
       return constValue*(target.selected-1) <= value && value <= constValue*target.selected;
-    }
+    },
+    // 登頂チェックのフィルタ
+    filterClimbed(key, item) {
+      let selectedValue = this.filter[key].selected;
+      // 未選択はすべてtrue
+      if (selectedValue === null) return true;
+      // 登頂チェックに値があるか確認
+      let targetClimbed = this.getHasClimbedById(item.id);
+      return selectedValue ? targetClimbed : !targetClimbed;
+    },
   },
 }
 </script>
