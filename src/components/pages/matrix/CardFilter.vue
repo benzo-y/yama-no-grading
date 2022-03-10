@@ -22,11 +22,20 @@
           chips
           dense
           :items="climbedItem"
-          item-text="name"
           item-value="id"
-          prepend-inner-icon="mdi-trophy"
           @change="changeClimbed"
         >
+          <template v-slot:[`label`]>
+            <v-icon style="height: 100%;">mdi-trophy-outline</v-icon>
+          </template>
+          <template v-slot:[`selection`]="{ item }">
+            <v-icon v-if="item.color" :color="item.color" class="mx-1">mdi-trophy</v-icon>
+            <span v-else></span>
+          </template>
+          <template v-slot:[`item`]="{ item }">
+            <v-icon v-if="item.color" :color="item.color">mdi-trophy</v-icon>
+            <span v-else></span>
+          </template>
         </v-select>
       </v-col>
       <v-col cols="1"></v-col>
@@ -51,8 +60,8 @@ export default {
         {id:"other", name:"その他"}
       ],
       climbedItem: [
-        {id:"on", name:'on'},
-        {id:"off", name:'off'},
+        {id:"on", color: "yellow darken-3"},
+        {id:"off", color: "grey lighten-1"},
       ],
       publisherValue: [],
       climbedValue: [],
