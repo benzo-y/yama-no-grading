@@ -79,10 +79,30 @@ import IconClimbed from "../parts/IconClimbed.vue";
 import { PUBLISHER } from "../../const/const";
 
 const ELEVATION_INCREMENTS = 500;
+const ELEVATION_MAX = 3500;
 const TIME_INCREMENTS = 10;
+const TIME_MAX = 50;
 const LENGTH_INCREMENTS = 10;
+const LENGTH_MAX = 50;
 const CUM_ELEVATION_INCREMENTS = 1;
+const CUM_ELEVATION_MAX = 5;
 const ROUTE_COEF_INCREMENTS = 20;
+const ROUTE_COEF_MAX = 100;
+
+// 「○○～○○」「○○～」の範囲のセレクトの選択肢を作成
+function createSelecrItems(increments, max) {
+  const arr = [{value: 0, name: ""}];
+  let i;
+  for(i=1; i*increments < max; i++) {
+    arr.push({
+      value: i,
+      name: (increments*(i-1)) + "～" + (increments*i)
+    });
+  }
+  // 末尾は「○○～」にする
+  arr.push({value: ++i, name: max + "～"});
+  return arr;
+}
 
 export default {
   data: () => ({
@@ -116,105 +136,35 @@ export default {
         selected: null,
       },
       start_point_elevation: {
-        items: [
-          {value: 0, name: ""},
-          {value: 1, name: "0~500"},
-          {value: 2, name: "500~1000"},
-          {value: 3, name: "1000~1500"},
-          {value: 4, name: "1500~2000"},
-          {value: 5, name: "2000~2500"},
-          {value: 6, name: "2500~3000"},
-          {value: 7, name: "3000~3500"},
-          {value: 8, name: "3500~"},
-        ],
+        items: createSelecrItems(ELEVATION_INCREMENTS, ELEVATION_MAX),
         selected: null,
       },
       highest_point_elevation: {
-        items: [
-          {value: 0, name: ""},
-          {value: 1, name: "0~500"},
-          {value: 2, name: "500~1000"},
-          {value: 3, name: "1000~1500"},
-          {value: 4, name: "1500~2000"},
-          {value: 5, name: "2000~2500"},
-          {value: 6, name: "2500~3000"},
-          {value: 7, name: "3000~3500"},
-          {value: 8, name: "3500~"},
-        ],
+        items: createSelecrItems(ELEVATION_INCREMENTS, ELEVATION_MAX),
         selected: null,
       },
       end_point_elevation: {
-        items: [
-          {value: 0, name: ""},
-          {value: 1, name: "0~500"},
-          {value: 2, name: "500~1000"},
-          {value: 3, name: "1000~1500"},
-          {value: 4, name: "1500~2000"},
-          {value: 5, name: "2000~2500"},
-          {value: 6, name: "2500~3000"},
-          {value: 7, name: "3000~3500"},
-          {value: 8, name: "3500~"},
-        ],
+        items: createSelecrItems(ELEVATION_INCREMENTS, ELEVATION_MAX),
         selected: null,
       },
       course_time: {
-        items: [
-          {value: 0, name: ""},
-          {value: 1, name: "0~10"},
-          {value: 2, name: "10~20"},
-          {value: 3, name: "20~30"},
-          {value: 4, name: "30~40"},
-          {value: 5, name: "40~50"},
-          {value: 6, name: "50~"},
-        ],
+        items: createSelecrItems(TIME_INCREMENTS, TIME_MAX),
         selected: null,
       },
       length: {
-        items: [
-          {value: 0, name: ""},
-          {value: 1, name: "0~10"},
-          {value: 2, name: "10~20"},
-          {value: 3, name: "20~30"},
-          {value: 4, name: "30~40"},
-          {value: 5, name: "40~50"},
-          {value: 6, name: "50~"},
-        ],
+        items: createSelecrItems(LENGTH_INCREMENTS, LENGTH_MAX),
         selected: null,
       },
       cum_up_elevation: {
-        items: [
-          {value: 0, name: ""},
-          {value: 1, name: "0~1"},
-          {value: 2, name: "1~2"},
-          {value: 3, name: "2~3"},
-          {value: 4, name: "3~4"},
-          {value: 5, name: "4~5"},
-          {value: 6, name: "5~"},
-        ],
+        items: createSelecrItems(CUM_ELEVATION_INCREMENTS, CUM_ELEVATION_MAX),
         selected: null,
       },
       cum_down_elevation: {
-        items: [
-          {value: 0, name: ""},
-          {value: 1, name: "0~1"},
-          {value: 2, name: "1~2"},
-          {value: 3, name: "2~3"},
-          {value: 4, name: "3~4"},
-          {value: 5, name: "4~5"},
-          {value: 6, name: "5~"},
-        ],
+        items: createSelecrItems(CUM_ELEVATION_INCREMENTS, CUM_ELEVATION_MAX),
         selected: null,
       },
       route_coef: {
-        items: [
-          {value: 0, name: ""},
-          {value: 1, name: "0~20"},
-          {value: 2, name: "20~40"},
-          {value: 3, name: "40~60"},
-          {value: 4, name: "60~80"},
-          {value: 5, name: "80~100"},
-          {value: 6, name: "100~"},
-        ],
+        items: createSelecrItems(ROUTE_COEF_INCREMENTS, ROUTE_COEF_MAX),
         selected: null,
       },
       publisher: {
