@@ -15,7 +15,7 @@
         ></v-text-field>
       </v-card-actions>
       <v-data-table
-        :headers="headersSetFilter"
+        :headers="headers"
         :items="routes"
         item-key="id"
         :search="search"
@@ -194,112 +194,86 @@ export default {
       },
     },
     routes: [],
-    headers: [
-      {
-        text: 'ルート名称',
-        align: 'start',
-        sortable: false,
-        value: 'name',
-      },
-      {
-        text: '体力度',
-        value: 'physical',
-        filterType: "filterBySelectedName",
-      },
-      { 
-        text: '技術的難易度',
-        value: 'technological',
-        filterType: "filterBySelectedName",
-      },
-      { text: 'スタート地点（地名）', value: 'start_point_name' },
-      { text:
-        'スタート地点（標高）',
-        value: 'start_point_elevation',
-        filterType: "filterElevation",
-      },
-      { text: 'ルート最高地点（地名）', value: 'highest_point_name' },
-      { text:
-        'ルート最高地点（標高）',
-        value: 'highest_point_elevation',
-        filterType: "filterElevation",
-      },
-      { text: '終了地点（地名）', value: 'end_point_name' },
-      {
-        text: '終了地点（標高）',
-        value: 'end_point_elevation',
-        filterType: "filterElevation",
-        },
-      {
-        text: 'コースタイム',
-        value: 'course_time',
-        filterType: "filterTime",
-        },
-      {
-        text: 'ルート長',
-        value: 'length',
-        filterType: "filterLength",
-        },
-      {
-        text: '累計登り標高差',
-        value: 'cum_up_elevation',
-        filterType: "filterCumElevation",
-        },
-      {
-        text: '累計下り標高差',
-        value: 'cum_down_elevation',
-        filterType: "filterCumElevation",
-      },
-      {
-        text: 'ルート係数',
-        value: 'route_coef',
-        filterType: "filterRouteCoef",
-      },
-      {
-        text: '発行元',
-        value: 'publisher',
-        filterType: "filterBySelectedName",
-      },
-      {
-        text: '',
-        value: 'climbed',
-        sortable: false,
-        filterType: "filterClimbed",
-      },
-      { text: '', value: 'actions', sortable: false },
-    ],
   }),
   components: {
     IconClimbed,
   },
   computed: {
     ...mapGetters(["routeMap", "getHasClimbedById"]),
-    headersSetFilter() {
-      this.headers.forEach(el => {
-        switch(el.filterType) {
-          case "filterBySelectedName":
-            el.filter = value => this.filterBySelectedName(value, el.value);
-            break;
-          case "filterElevation":
-            el.filter = value => this.filterUseIncrements(value, el.value, ELEVATION_INCREMENTS);
-            break;
-          case "filterTime":
-            el.filter = value => this.filterUseIncrements(value, el.value, TIME_INCREMENTS);
-            break;
-          case "filterLength":
-            el.filter = value => this.filterUseIncrements(value, el.value, LENGTH_INCREMENTS);
-            break;
-          case "filterCumElevation":
-            el.filter = value => this.filterUseIncrements(value, el.value, CUM_ELEVATION_INCREMENTS);
-            break;
-          case "filterRouteCoef":
-            el.filter = value => this.filterUseIncrements(value, el.value, ROUTE_COEF_INCREMENTS);
-            break;
-          case "filterClimbed":
-            el.filter = (value, search, item) => this.filterClimbed(el.value, item);
-            break;
-        }
-      });
-      return this.headers;
+    headers() {
+      return [
+        {
+          text: 'ルート名称',
+          align: 'start',
+          sortable: false,
+          value: 'name',
+        },
+        {
+          text: '体力度',
+          value: 'physical',
+          filter: value => this.filterBySelectedName(value, 'physical'),
+        },
+        { 
+          text: '技術的難易度',
+          value: 'technological',
+          filter: value => this.filterBySelectedName(value, 'technological'),
+        },
+        { text: 'スタート地点（地名）', value: 'start_point_name' },
+        { text:
+          'スタート地点（標高）',
+          value: 'start_point_elevation',
+          filter: value => this.filterUseIncrements(value, 'start_point_elevation', ELEVATION_INCREMENTS),
+        },
+        { text: 'ルート最高地点（地名）', value: 'highest_point_name' },
+        { text:
+          'ルート最高地点（標高）',
+          value: 'highest_point_elevation',
+          filter: value => this.filterUseIncrements(value, 'highest_point_elevation', ELEVATION_INCREMENTS),
+        },
+        { text: '終了地点（地名）', value: 'end_point_name' },
+        {
+          text: '終了地点（標高）',
+          value: 'end_point_elevation',
+          filter: value => this.filterUseIncrements(value, 'end_point_elevation', ELEVATION_INCREMENTS),
+          },
+        {
+          text: 'コースタイム',
+          value: 'course_time',
+          filter: value => this.filterUseIncrements(value, 'course_time', TIME_INCREMENTS),
+          },
+        {
+          text: 'ルート長',
+          value: 'length',
+          filter: value => this.filterUseIncrements(value, 'length', LENGTH_INCREMENTS),
+          },
+        {
+          text: '累計登り標高差',
+          value: 'cum_up_elevation',
+          filter: value => this.filterUseIncrements(value, 'cum_up_elevation', CUM_ELEVATION_INCREMENTS),
+          },
+        {
+          text: '累計下り標高差',
+          value: 'cum_down_elevation',
+          filter: value => this.filterUseIncrements(value, 'cum_down_elevation', CUM_ELEVATION_INCREMENTS),
+        },
+        {
+          text: 'ルート係数',
+          value: 'route_coef',
+          filter: value => this.filterUseIncrements(value, 'route_coef', ROUTE_COEF_INCREMENTS),
+        },
+        {
+          text: '発行元',
+          value: 'publisher',
+          filter: value => this.filterBySelectedName(value, 'publisher'),
+        },
+        {
+          text: '',
+          value: 'climbed',
+          sortable: false,
+          filter: (value, search, item) => this.filterClimbed('climbed', item),
+        },
+        { text: '', value: 'actions', sortable: false },
+      ]
     },
   },
   mounted() {
