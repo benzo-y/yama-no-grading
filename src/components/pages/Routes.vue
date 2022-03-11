@@ -2,7 +2,7 @@
   <v-container class="text-sm-body-2 mt-5" fluid>
     <v-card>
       <v-card-actions>
-        <v-btn color="primary">
+        <v-btn color="primary" :to="{ name: 'route_edit' }">
           新規作成
         </v-btn>
         <v-spacer></v-spacer>
@@ -34,23 +34,17 @@
             v-if="item.publisherKey==='other'"
             justify-center
           >
-            <v-icon
-              class="mr-1"
-            >
-              mdi-pencil
-            </v-icon>
-            <v-icon
-              class="ml-1"
-            >
-              mdi-delete
-            </v-icon>
+            <v-btn icon :to="{ name: 'route_edit', params: { route_id: item.id }}">
+              <v-icon class="mr-1">mdi-pencil</v-icon>
+            </v-btn>
+            <v-icon class="ml-1">mdi-delete</v-icon>
           </v-layout>
         </template>
         <template v-slot:[`body.append`]>
           <tr>
             <td v-for="header,index in headers" :key="index">
               <v-select
-                v-if="'filter' in header" 
+                v-if="'filter' in header"
                 :items="filter[header.value].items"
                 item-text="name"
                 item-value="value"
@@ -213,7 +207,7 @@ export default {
           value: 'physical',
           filter: value => this.filterBySelectedName(value, 'physical'),
         },
-        { 
+        {
           text: '技術的難易度',
           value: 'technological',
           filter: value => this.filterBySelectedName(value, 'technological'),

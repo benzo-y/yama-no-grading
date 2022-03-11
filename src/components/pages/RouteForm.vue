@@ -4,7 +4,7 @@
       <h1>This is a RouteForm page</h1>
       <v-row>
         <v-col>
-          <CardRouteFormVue/>
+          <CardRouteFormVue :id="id"/>
         </v-col>
       </v-row>
     </v-container>
@@ -15,7 +15,12 @@
 import CardRouteFormVue from '../parts/CardRouteForm.vue';
 
 export default {
-    components: {CardRouteFormVue},
+  components: {CardRouteFormVue},
+  computed: {
+    id() {
+      return this.$route.params.route_id;
+    },
+  },
 }
 
 </script>
