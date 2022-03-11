@@ -325,12 +325,12 @@ export default {
       return value.toString() === target.items[target.selected].name;
     },
     // ○○～○○の範囲を選択するフィルタ：一致したものを表示する、0～10の場合は0以上、10以下
-    filterUseIncrements(value, key, constValue) {
+    filterUseIncrements(value, key, increments) {
       let target = this.filter[key];
       if (!target.selected) return true;
       // 選択した値が配列の一番最後だった場合、「以上の」チェックだけする
-      if (target.selected === (target.items.length-1)) return constValue*(target.selected-1) <= value;
-      return constValue*(target.selected-1) <= value && value <= constValue*target.selected;
+      if (target.selected === (target.items.length-1)) return increments*(target.selected-1) <= value;
+      return increments*(target.selected-1) <= value && value <= increments*target.selected;
     },
     // 登頂チェックのフィルタ
     filterClimbed(key, item) {
