@@ -1,10 +1,12 @@
 <template>
   <v-card>
     <v-card-title>
-      <div style="width:100%">
-        {{route.name}}
+      <div v-if="route.id" style="width:100%">
+        <template v-if="mode==='read'">{{route.name}}</template>
+        <template v-if="mode==='edit'">編集</template>
         <IconClimbed :id="route.id" class="float-right mr-4"/>
       </div>
+      <div v-else>新規登録</div>
     </v-card-title>
     <v-card-text>
       <v-form
@@ -13,6 +15,13 @@
         class="mx-4"
       >
         <v-text-field
+          v-if="mode==='edit'"
+          v-model="route[property]"
+          :label="item"
+        >
+        </v-text-field>
+        <v-text-field
+          v-if="mode==='read'"
           v-model="route[property]"
           :label="item"
           readonly
@@ -69,8 +78,19 @@ export default {
   computed: {
     ...mapGetters(["getRouteById"]),
   },
-  created() {    
-    this.route = this.getRouteById(this.id);
+  created() {
+    if (this.id) {
+      this.route = { ...this.getRouteById(this.id) };
+    }
+  },
+  mounted() {
+    // stateの値の変更を検知する（ミューテーション実行後の値を取得）
+    this.$store.subscribe((mutation) => {
+      console.log(this.id);
+      if (mutation.type === 'setRouteMap' && this.id) {
+        this.route = { ...this.getRouteById(this.id) };
+      }
+    });
   },
   methods: {
     clickClose() {
