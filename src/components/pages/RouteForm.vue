@@ -17,6 +17,7 @@
 
 <script>
 import CardRouteFormVue from '../parts/CardRouteForm.vue';
+import { mapActions } from 'vuex';
 
 export default {
   components: {CardRouteFormVue},
@@ -28,11 +29,20 @@ export default {
       return this.$route.params.route_id;
     },
   },
+  methods: {
+    ...mapActions([
+      "addRoute",
+    ]),
+  },
   watch: {
     submitData(value) {
-      console.log(value);
-      if (value) {
-        // 登録処理
+      if(value) {
+        if("id" in value) {
+          // 変更
+        } else {
+          // 登録処理
+          this.addRoute(value);
+        }
       }
       this.$router.push({ name: 'routes' }, () => {});
     }

@@ -86,7 +86,6 @@ export default {
   mounted() {
     // stateの値の変更を検知する（ミューテーション実行後の値を取得）
     this.$store.subscribe((mutation) => {
-      console.log(this.id);
       if (mutation.type === 'setRouteMap' && this.id) {
         this.route = { ...this.getRouteById(this.id) };
       }
