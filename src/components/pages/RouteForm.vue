@@ -1,10 +1,14 @@
 <template>
   <div>
     <v-container>
-      <h1>This is a RouteForm page</h1>
       <v-row>
         <v-col>
-          <CardRouteFormVue :id="id"/>
+          <CardRouteFormVue
+            mode="edit"
+            :id="id"
+            :clickCancel.sync="submitData"
+            :clickOk.sync="submitData"
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -16,11 +20,23 @@ import CardRouteFormVue from '../parts/CardRouteForm.vue';
 
 export default {
   components: {CardRouteFormVue},
+  data:() => ({
+    submitData: null,
+  }),
   computed: {
     id() {
       return this.$route.params.route_id;
     },
   },
+  watch: {
+    submitData(value) {
+      console.log(value);
+      if (value) {
+        // 登録処理
+      }
+      this.$router.push({ name: 'routes' }, () => {});
+    }
+  }
 }
 
 </script>

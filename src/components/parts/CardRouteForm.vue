@@ -24,10 +24,10 @@
       <v-btn v-if="mode==='read'" @click="clickClose">
         戻る
       </v-btn>
-      <v-btn color="primary" v-if="mode==='edit'">
+      <v-btn color="primary" v-if="mode==='edit'" @click="clickOk">
         保存
       </v-btn>
-      <v-btn v-if="mode==='edit'">
+      <v-btn v-if="mode==='edit'" @click="clickCancel">
         キャンセル
       </v-btn>
     </v-card-actions>
@@ -75,6 +75,12 @@ export default {
   methods: {
     clickClose() {
       this.$emit('update:clickClose', false);
+    },
+    clickCancel() {
+      this.$emit('update:clickCancel');
+    },
+    clickOk() {
+      this.$emit('update:clickOk', this.route);
     },
   },
 }
