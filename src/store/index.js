@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { GoogleAuthProvider, getAuth, signInWithRedirect, signOut } from "firebase/auth";
-import { doc, getDoc, getDocs, setDoc, updateDoc, collection, arrayUnion, arrayRemove } from "firebase/firestore";
+import { doc, getDoc, getDocs, addDoc, setDoc, updateDoc, collection, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db } from '../plugins/firebase';
 import { PUBLISHER } from '../const/const'
 
@@ -38,8 +38,7 @@ export default new Vuex.Store({
     },
     setMatrixMap(state, matrixMap) {
       state.matrixMap = matrixMap;
-    }
-
+    },
   },
   actions: {
     login() {
@@ -70,7 +69,7 @@ export default new Vuex.Store({
     async addClimbedId({commit, getters}, id) {
       // fierbaseのusersドキュメントのclimbedIdsからIDを取得
       const userRef = doc(db, "users", getters.uid);
-      setDoc(userRef, {}, { merge: true });      
+      setDoc(userRef, {}, { merge: true });
       await updateDoc(userRef, {
         climbedIds: arrayUnion(id)
       });
@@ -80,7 +79,7 @@ export default new Vuex.Store({
     async deleteClimbedId({commit,getters}, id) {
       // fierbaseのusersドキュメントのclimbedIdsからIDを削除
       const userRef = doc(db, "users", getters.uid);
-      setDoc(userRef, {}, { merge: true });      
+      setDoc(userRef, {}, { merge: true });
       await updateDoc(userRef, {
         climbedIds: arrayRemove(id)
       });
@@ -94,7 +93,7 @@ export default new Vuex.Store({
         ["other", []],
         ["all", []]
       ]);
-      const matrixMap = new Map(); 
+      const matrixMap = new Map();
 
       // fierbaseからusersが登録しているroutesコレクションを取得
       const othreArr = routesMap.get('other');
@@ -131,7 +130,34 @@ export default new Vuex.Store({
       commit('setRouteMap', routesMap);
       commit('setMatrixMap', matrixMap);
     },
+    async addRoute({commit, getters}, route) {
+      // fierbaseのusersのroutesコレクションに追加
+      const routeDoc = await addDoc(collection(db, "users", getters.uid, "routes"), route);
 
+      // 登録結果からストアに格納するデータを設定
+      route.id = routeDoc.id;
+      route.publisher = PUBLISHER.other;
+      route.publisherKey = "other";
+
+      // リスト用のマップに追加
+      const routesMap = new Map(getters.routeMap);
+      routesMap.get('other').push(route);
+      routesMap.get('all').push(route);
+
+      // マトリクス用のマップに追加
+      const matrixMap = new Map(getters.matrixMap);
+      const pref = route.physical + "-" + route.technological;
+      if(!matrixMap.has(pref)) {
+        matrixMap.set(pref, new Map());
+      }
+      const gradeingMap = matrixMap.get(pref);
+      addRouteToMatrixMap(gradeingMap, "all", route);
+      addRouteToMatrixMap(gradeingMap, "other", route);
+
+      // ステートのルート情報にデータを格納
+      commit('setRouteMap', routesMap);
+      commit('setMatrixMap', matrixMap);
+    },
   },
   modules: {
   },
@@ -154,8 +180,8 @@ const addRouteToMatrixMap = ((map, key, route) => {
     map.set(key, [route]);
   } else {
     map.set(
-      key, 
+      key,
       [...map.get(key), route]
     );
-  }  
+  }
 });
