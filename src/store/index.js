@@ -158,6 +158,48 @@ export default new Vuex.Store({
       commit('setRouteMap', routesMap);
       commit('setMatrixMap', matrixMap);
     },
+    async updateRoute({commit, getters}, route) {
+      // fierbaseのusersのroutesコレクションの対象のドキュメントを上書きする
+      await setDoc(doc(db, "users", getters.uid, "routes", route.id), route);
+
+      // リスト用のマップの更新
+      const routesMap = new Map(getters.routeMap);
+      let updateTarget;
+
+      ['other', 'all'].forEach(value => {
+        let targetArr = routesMap.get(value);
+        for(let i=0; i< targetArr.length; i++) {
+          if(targetArr[i].id === route.id) {
+            updateTarget = targetArr[i];
+            targetArr[i] = route;
+            break;
+          }
+        }
+      });
+
+      // マトリクス用のマップの更新
+      const matrixMap = new Map(getters.matrixMap);
+      let pref;
+
+      // マトリクス用のマップから更新前の情報を削除
+      pref = updateTarget.physical + "-" + updateTarget.technological;
+      const targetGrade = matrixMap.get(pref);
+      deleteRouteFromMatrixMap(targetGrade, "other", route);
+      deleteRouteFromMatrixMap(targetGrade, "all", route);
+
+      // マトリクス用のマップに追加
+      pref = route.physical + "-" + route.technological;
+      if(!matrixMap.has(pref)) {
+        matrixMap.set(pref, new Map());
+      }
+      const gradeingMap = matrixMap.get(pref);
+      addRouteToMatrixMap(gradeingMap, "all", route);
+      addRouteToMatrixMap(gradeingMap, "other", route);
+
+      // ステートのルート情報にデータを格納
+      commit('setRouteMap', routesMap);
+      commit('setMatrixMap', matrixMap);
+    },
   },
   modules: {
   },
@@ -183,5 +225,15 @@ const addRouteToMatrixMap = ((map, key, route) => {
       key,
       [...map.get(key), route]
     );
+  }
+});
+
+const deleteRouteFromMatrixMap = ((map, key, route) => {
+  const targetArr = map.get(key);
+  for(let i=0; i< targetArr.length; i++) {
+    if(targetArr[i].id === route.id) {
+      targetArr.splice(i, 1);
+      break;
+    }
   }
 });

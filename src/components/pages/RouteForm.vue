@@ -32,6 +32,7 @@ export default {
   methods: {
     ...mapActions([
       "addRoute",
+      "updateRoute"
     ]),
   },
   watch: {
@@ -39,6 +40,7 @@ export default {
       if(value) {
         if("id" in value) {
           // 変更
+          this.updateRoute(value);
         } else {
           // 登録処理
           this.addRoute(value);
