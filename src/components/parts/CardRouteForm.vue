@@ -17,6 +17,14 @@
           v-for="item, property in form"
         >
           <v-text-field
+            v-if="item.type==='title' && mode==='edit'"
+            v-model="route[property]"
+            :label="item.label"
+            :rules="item.rules"
+            :key="property"
+          >
+          </v-text-field>
+          <v-text-field
             v-if="item.type==='text'"
             v-model="route[property]"
             :label="item.label"
@@ -93,7 +101,7 @@ export default {
     form: {
       name : {
         label: 'ルート名称',
-        type: 'text',
+        type: 'title',
         rules: [
           v => (v && v.length <= 100) || '100文字以内で値を入力してください。',
         ],
