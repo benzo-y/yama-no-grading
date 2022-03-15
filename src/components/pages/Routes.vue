@@ -37,7 +37,9 @@
             <v-btn icon :to="{ name: 'route_edit', params: { route_id: item.id }}">
               <v-icon class="mr-1">mdi-pencil</v-icon>
             </v-btn>
-            <v-icon class="ml-1">mdi-delete</v-icon>
+            <v-btn icon @click="cleckDeleteIcon(item)">
+              <v-icon class="ml-1">mdi-delete</v-icon>
+            </v-btn>
           </v-layout>
         </template>
         <template v-slot:[`body.append`]>
@@ -64,11 +66,34 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-dialog
+      v-model="deleteDialog.isShow"
+      width="400px"
+    >
+      <v-card>
+        <v-card-title>
+          <strong>{{deleteDialog.target.name}}</strong>を削除しますか？
+        </v-card-title>
+        <v-card-actions class="justify-center">
+          <v-btn
+            color="error"
+            @click="clickDelete()"
+          >
+            削除
+          </v-btn>
+          <v-btn
+            @click="deleteDialog.isShow = false"
+          >
+            キャンセル
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import IconClimbed from "../parts/IconClimbed.vue";
 import { PUBLISHER } from "../../const/const";
 
@@ -188,6 +213,10 @@ export default {
       },
     },
     routes: [],
+    deleteDialog: {
+      isShow: false,
+      target: {},
+      },
   }),
   components: {
     IconClimbed,
@@ -280,6 +309,7 @@ export default {
     });
   },
   methods: {
+    ...mapActions(["deleteRoute"]),
     filterOnlyCapsText (value, search) {
       return value != null &&
         search != null &&
@@ -309,6 +339,14 @@ export default {
       let targetClimbed = this.getHasClimbedById(item.id);
       return selectedValue ? targetClimbed : !targetClimbed;
     },
+    cleckDeleteIcon(target) {
+      this.deleteDialog.target = target;
+      this.deleteDialog.isShow = true;
+    },
+    clickDelete() {
+      this.deleteRoute(this.deleteDialog.target);
+      this.deleteDialog.isShow = false;
+    }
   },
 }
 </script>

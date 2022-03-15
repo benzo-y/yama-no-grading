@@ -200,6 +200,15 @@ export default new Vuex.Store({
       commit('setRouteMap', routesMap);
       commit('setMatrixMap', matrixMap);
     },
+    async deleteRoute(target) {
+      // TODO
+      console.log(target,"を削除する");
+
+      // fierbaseのusersのroutesコレクションの対象のドキュメントを削除する
+      // ストアから対象のルートを削除する
+      // 登頂済みにIDが存在する場合、削除する
+
+    },
   },
   modules: {
   },
