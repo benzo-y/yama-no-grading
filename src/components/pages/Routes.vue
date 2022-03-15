@@ -87,14 +87,14 @@ const ROUTE_COEF_MAX = 100;
 function createSelecrItems(increments, max) {
   const arr = [{value: 0, name: ""}];
   let i;
-  for(i=1; i*increments < max; i++) {
+  for(i=1; i*increments <= max; i++) {
     arr.push({
       value: i,
       name: (increments*(i-1)) + "～" + (increments*i)
     });
   }
   // 末尾は「○○～」にする
-  arr.push({value: ++i, name: max + "～"});
+  arr.push({value: i, name: max + "～"});
   return arr;
 }
 
