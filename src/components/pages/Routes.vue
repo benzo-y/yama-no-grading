@@ -275,7 +275,7 @@ export default {
     // stateの値の変更を検知する（ミューテーション実行後の値を取得）
     this.$store.subscribe((mutation) => {
       if (mutation.type === 'setRouteMap') {
-        this.routes = this.routeMap.get("all");
+        this.routes = [...this.routeMap.get("all")];
       }
     });
   },
