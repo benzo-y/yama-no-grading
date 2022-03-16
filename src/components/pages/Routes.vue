@@ -309,7 +309,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["deleteRoute"]),
+    ...mapActions(["deleteRoute", "deleteClimbedId"]),
     filterOnlyCapsText (value, search) {
       return value != null &&
         search != null &&
@@ -345,6 +345,7 @@ export default {
     },
     clickDelete() {
       this.deleteRoute(this.deleteDialog.target);
+      this.deleteClimbedId(this.deleteDialog.target.id);
       this.deleteDialog.isShow = false;
     }
   },

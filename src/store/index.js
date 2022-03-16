@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { GoogleAuthProvider, getAuth, signInWithRedirect, signOut } from "firebase/auth";
-import { doc, getDoc, getDocs, addDoc, setDoc, updateDoc, collection, arrayUnion, arrayRemove } from "firebase/firestore";
+import { doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, collection, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db } from '../plugins/firebase';
 import { PUBLISHER } from '../const/const'
 
@@ -200,14 +200,32 @@ export default new Vuex.Store({
       commit('setRouteMap', routesMap);
       commit('setMatrixMap', matrixMap);
     },
-    async deleteRoute(target) {
-      // TODO
-      console.log(target,"を削除する");
-
+    async deleteRoute({commit, getters}, target) {
       // fierbaseのusersのroutesコレクションの対象のドキュメントを削除する
-      // ストアから対象のルートを削除する
-      // 登頂済みにIDが存在する場合、削除する
+      await deleteDoc(doc(db, "users", getters.uid, "routes", target.id));
 
+      // リスト用のマップから対象のルートを削除
+      const routesMap = new Map(getters.routeMap);
+      ['other', 'all'].forEach(value => {
+        let targetArr = routesMap.get(value);
+        for(let i=0; i< targetArr.length; i++) {
+          if(targetArr[i].id === target.id) {
+            targetArr.splice(i,1);
+            break;
+          }
+        }
+      });
+
+      // マトリクス用のマップから対象のルートを削除
+      const matrixMap = new Map(getters.matrixMap);
+      const pref = target.physical + "-" + target.technological;
+      const targetGrade = matrixMap.get(pref);
+      deleteRouteFromMatrixMap(targetGrade, "other", target);
+      deleteRouteFromMatrixMap(targetGrade, "all", target);
+
+      // ステートのルート情報にデータを格納
+      commit('setRouteMap', routesMap);
+      commit('setMatrixMap', matrixMap);
     },
   },
   modules: {
