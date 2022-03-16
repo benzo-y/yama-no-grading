@@ -66,36 +66,15 @@
         </template>
       </v-data-table>
     </v-card>
-    <v-dialog
-      v-model="deleteDialog.isShow"
-      width="400px"
-    >
-      <v-card>
-        <v-card-title>
-          <strong>{{deleteDialog.target.name}}</strong>を削除しますか？
-        </v-card-title>
-        <v-card-actions class="justify-center">
-          <v-btn
-            color="error"
-            @click="clickDelete()"
-          >
-            削除
-          </v-btn>
-          <v-btn
-            @click="deleteDialog.isShow = false"
-          >
-            キャンセル
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <DialogRouteDel :isShow.sync="deleteDialog.isShow" :deleteTarget="deleteDialog.target"/>
   </v-container>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import IconClimbed from "../parts/IconClimbed.vue";
 import { PUBLISHER } from "../../const/const";
+import DialogRouteDel from "./routes/DialogRouteDel.vue";
 
 const ELEVATION_INCREMENTS = 500;
 const ELEVATION_MAX = 3500;
@@ -220,6 +199,7 @@ export default {
   }),
   components: {
     IconClimbed,
+    DialogRouteDel,
   },
   computed: {
     ...mapGetters(["routeMap", "getHasClimbedById"]),
@@ -309,7 +289,6 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["deleteRoute", "deleteClimbedId"]),
     filterOnlyCapsText (value, search) {
       return value != null &&
         search != null &&
@@ -343,11 +322,6 @@ export default {
       this.deleteDialog.target = target;
       this.deleteDialog.isShow = true;
     },
-    clickDelete() {
-      this.deleteRoute(this.deleteDialog.target);
-      this.deleteClimbedId(this.deleteDialog.target.id);
-      this.deleteDialog.isShow = false;
-    }
   },
 }
 </script>
