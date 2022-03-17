@@ -47,7 +47,7 @@
 export default {
   data: () => ({
       publisherItem: [
-        {id:"shinshu", name:"信州"},
+        {id:"nagano", name:"長野"},
         {id:"yamanashi", name:"山梨"},
         {id:"shizuoka", name:"静岡"},
         {id:"gunma", name:"群馬"},

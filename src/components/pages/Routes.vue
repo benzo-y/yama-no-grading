@@ -168,7 +168,7 @@ export default {
       publisher: {
         items: [
           {value: 0, name: ""},
-          {value: 1, name: PUBLISHER.shinshu},
+          {value: 1, name: PUBLISHER.nagano},
           {value: 2, name: PUBLISHER.yamanashi},
           {value: 3, name: PUBLISHER.shizuoka},
           {value: 4, name: PUBLISHER.gunma},

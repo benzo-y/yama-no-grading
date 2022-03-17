@@ -60,7 +60,7 @@ const MATRIX_AXIS = {
 };
 
 const PUBLISHER = {
-  shinshu: "長野県",
+  nagano: "長野県",
   yamanashi: "山梨県",
   shizuoka: "静岡県",
   gunma: "群馬県",
