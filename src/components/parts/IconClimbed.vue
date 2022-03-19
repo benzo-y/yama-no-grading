@@ -1,17 +1,19 @@
 <template>
   <div>
-    <v-icon v-if="hasClimbed" @click="clickIcon" color="yellow darken-3">mdi-trophy</v-icon>
-    <v-icon v-if="!hasClimbed" @click="clickIcon" color="grey lighten-1">mdi-trophy</v-icon>    
+    <v-icon v-if="hasClimbed" @click="clickIcon" :color="icon.on">mdi-trophy</v-icon>
+    <v-icon v-if="!hasClimbed" @click="clickIcon" :color="icon.off">mdi-trophy</v-icon>
   </div>
 </template>
 
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import { CLIMBED_ICON_COLOR } from "../../const/const";
 
 export default {
   data: () => ({
     hasClimbed: false,
+    icon: CLIMBED_ICON_COLOR,
   }),
   props: {
     id: {type: String},

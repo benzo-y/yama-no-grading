@@ -94,6 +94,7 @@
 
 import IconClimbed from "./IconClimbed.vue"
 import { mapGetters } from "vuex"
+import { TECHNOLOGICAL } from "../../const/const"
 
 export default {
   components: {IconClimbed},
@@ -114,7 +115,7 @@ export default {
       technological : {
         label:'技術的難易度',
         type: 'select',
-        items: ["A","B","C","D","E"],
+        items: TECHNOLOGICAL,
         rules: [
           v => !!v || '選択してください。',
         ],

@@ -73,7 +73,7 @@
 <script>
 import { mapGetters } from "vuex";
 import IconClimbed from "../parts/IconClimbed.vue";
-import { PUBLISHER } from "../../const/const";
+import { PHYSICAL, TECHNOLOGICAL,PUBLISHER_ITEMS, CLIMBED_ICON_ITEMS } from "../../const/const";
 import DialogRouteDel from "./routes/DialogRouteDel.vue";
 
 const ELEVATION_INCREMENTS = 500;
@@ -108,28 +108,15 @@ export default {
     filter: {
       physical: {
         items: [
-          {value: 0, name: ""},
-          {value: 1, name: "1"},
-          {value: 2, name: "2"},
-          {value: 3, name: "3"},
-          {value: 4, name: "4"},
-          {value: 5, name: "5"},
-          {value: 6, name: "6"},
-          {value: 7, name: "7"},
-          {value: 8, name: "8"},
-          {value: 9, name: "9"},
-          {value: 10, name: "10"},
+          {value: null, name: ""},
+          ...PHYSICAL.map((v,i) => ({value:i+1, name:v})),
         ],
         selected: null,
       },
       technological: {
         items: [
-          {value: 0, name: ""},
-          {value: 1, name: "A"},
-          {value: 2, name: "B"},
-          {value: 3, name: "C"},
-          {value: 4, name: "D"},
-          {value: 5, name: "E"},
+          {value: null, name: ""},
+          ...TECHNOLOGICAL.map((v,i) => ({value:i+1, name:v})),
         ],
         selected: null,
       },
@@ -167,26 +154,15 @@ export default {
       },
       publisher: {
         items: [
-          {value: 0, name: ""},
-          {value: 1, name: PUBLISHER.nagano},
-          {value: 2, name: PUBLISHER.yamanashi},
-          {value: 3, name: PUBLISHER.shizuoka},
-          {value: 4, name: PUBLISHER.gunma},
-          {value: 5, name: PUBLISHER.gifu},
-          {value: 6, name: PUBLISHER.tochigi},
-          {value: 7, name: PUBLISHER.ishizuchisankei},
-          {value: 8, name: PUBLISHER.akita},
-          {value: 9, name: PUBLISHER.toyama},
-          {value: 10, name: PUBLISHER.hyaku},
-          {value: 11, name: PUBLISHER.other},
+          {value: null, name: ""},
+          ...PUBLISHER_ITEMS
         ],
         selected: null,
       },
       climbed: {
         items: [
           {value: null},
-          {value: true, color: "yellow darken-3"},
-          {value: false, color: "grey lighten-1"},
+          ...CLIMBED_ICON_ITEMS,
         ],
         selected: null,
       },
@@ -299,7 +275,9 @@ export default {
     filterBySelectedName(value, key) {
       let target = this.filter[key];
       if (!target.selected) return true;
-      return value.toString() === target.items[target.selected].name;
+      // セレクトで選択した項目を取得して値の比較をする
+      const selectedItem = target.items.find(item => item.value === target.selected) || {};
+      return value === selectedItem.name;
     },
     // ○○～○○の範囲を選択するフィルタ：一致したものを表示する、0～10の場合は0以上、10以下
     filterUseIncrements(value, key, increments) {

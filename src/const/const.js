@@ -1,3 +1,6 @@
+const PHYSICAL = [1,2,3,4,5,6,7,8,9,10];
+const TECHNOLOGICAL = ["A","B","C","D","E"];
+
 const MATRIX_AXIS = {
   physical: [
     { grade: 10, body: "体力度：10", tooltip: "2～3泊以上が適当" },
@@ -59,18 +62,33 @@ const MATRIX_AXIS = {
   ],
 };
 
+
 const PUBLISHER = {
-  nagano: "長野県",
-  yamanashi: "山梨県",
-  shizuoka: "静岡県",
-  gunma: "群馬県",
-  gifu: "岐阜県",
-  tochigi: "栃木券",
+  nagano: "長野",
+  yamanashi: "山梨",
+  shizuoka: "静岡",
+  niigata: "新潟",
+  gunma: "群馬",
+  gifu: "岐阜",
+  tochigi: "栃木",
   ishizuchisankei: "石鎚山系",
-  akita: "秋田県",
-  toyama: "富山県",
+  akita: "秋田",
+  toyama: "富山",
   hyaku: "百名山",
   other: "その他",
-}
+};
 
-export { MATRIX_AXIS, PUBLISHER };
+const PUBLISHER_ITEMS = Object.entries(PUBLISHER).map(arr => {
+  return {value:arr[0], name:arr[1]}
+});
+
+const CLIMBED_ICON_COLOR = {
+  on: "yellow darken-3",
+  off: "grey lighten-1"
+}
+const CLIMBED_ICON_ITEMS = [
+  {value:true, color: CLIMBED_ICON_COLOR.on},
+  {value:false, color: CLIMBED_ICON_COLOR.off},
+];
+
+export { PHYSICAL, TECHNOLOGICAL, MATRIX_AXIS, PUBLISHER, PUBLISHER_ITEMS, CLIMBED_ICON_COLOR, CLIMBED_ICON_ITEMS };

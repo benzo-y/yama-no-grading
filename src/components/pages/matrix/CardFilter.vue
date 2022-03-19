@@ -10,7 +10,7 @@
           dense
           :items="publisherItem"
           item-text="name"
-          item-value="id"
+          item-value="value"
           label="発行元"
           @change="changePublisher"
         ></v-select>
@@ -22,7 +22,7 @@
           chips
           dense
           :items="climbedItem"
-          item-value="id"
+          item-value="value"
           @change="changeClimbed"
         >
           <template v-slot:[`label`]>
@@ -44,25 +44,12 @@
 </template>
 
 <script>
+import { PUBLISHER_ITEMS, CLIMBED_ICON_ITEMS } from "../../../const/const"
+
 export default {
   data: () => ({
-      publisherItem: [
-        {id:"nagano", name:"長野"},
-        {id:"yamanashi", name:"山梨"},
-        {id:"shizuoka", name:"静岡"},
-        {id:"gunma", name:"群馬"},
-        {id:"gifu", name:"岐阜"},
-        {id:"tochigi", name:"栃木"},
-        {id:"ishizuchisankei", name:"石鎚山系"},
-        {id:"akita", name:"秋田"},
-        {id:"toyama", name:"富山"},
-        {id:"hyaku", name:"百名山"},
-        {id:"other", name:"その他"}
-      ],
-      climbedItem: [
-        {id:"on", color: "yellow darken-3"},
-        {id:"off", color: "grey lighten-1"},
-      ],
+      publisherItem: PUBLISHER_ITEMS,
+      climbedItem: CLIMBED_ICON_ITEMS,
       publisherValue: [],
       climbedValue: [],
   }),

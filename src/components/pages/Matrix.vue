@@ -115,9 +115,9 @@ export default {
         }
 
         // 登頂チェックでフィルタ
-        if(this.climbedValue.length == 1 && this.climbedValue[0] == "on") {
+        if(this.climbedValue.length == 1 && this.climbedValue[0]) {
           result = result.filter(val => this.climbedIdSet.has(val.id));
-        } else if(this.climbedValue.length == 1 && this.climbedValue[0] == "off") {
+        } else if(this.climbedValue.length == 1 && !this.climbedValue[0]) {
           result = result.filter(val => !this.climbedIdSet.has(val.id));
         }
         return result
