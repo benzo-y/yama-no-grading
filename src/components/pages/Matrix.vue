@@ -82,7 +82,7 @@ export default {
       TooltipAxis
     },
     computed: {
-      ...mapGetters(["matrixMap", "climbedIdSet"]),
+      ...mapGetters(["matrixMap", "getHasClimbedById"]),
     },
     mounted() {
       // stateの値の変更を検知する（ミューテーション実行後の値を取得）
@@ -116,9 +116,9 @@ export default {
 
         // 登頂チェックでフィルタ
         if(this.climbedValue.length == 1 && this.climbedValue[0]) {
-          result = result.filter(val => this.climbedIdSet.has(val.id));
+          result = result.filter(val => this.getHasClimbedById(val.id));
         } else if(this.climbedValue.length == 1 && !this.climbedValue[0]) {
-          result = result.filter(val => !this.climbedIdSet.has(val.id));
+          result = result.filter(val => !this.getHasClimbedById(val.id));
         }
         return result
       }

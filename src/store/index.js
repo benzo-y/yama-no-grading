@@ -233,7 +233,6 @@ export default new Vuex.Store({
   getters: {
     uid: state => state.login_user ? state.login_user.uid : null,
     getHasClimbedById: state => id => state.climbedIdSet.has(id),
-    climbedIdSet: state => state.climbedIdSet,
     matrixMap: state => state.matrixMap,
     getRouteById: state => id => {
       const allRouteArr = state.routeMap.get("all");

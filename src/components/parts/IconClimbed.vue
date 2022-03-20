@@ -19,10 +19,7 @@ export default {
     id: {type: String},
   },
   computed: {
-    ...mapGetters(['getHasClimbedById', 'climbedIdSet']),
-    _climbedIdSet() {
-      return this.climbedIdSet;
-    },
+    ...mapGetters(['getHasClimbedById']),
   },
   methods: {
     ...mapActions(['addClimbedId', 'deleteClimbedId']),
@@ -40,11 +37,14 @@ export default {
   created() {
     this.hasClimbed = this.getHasClimbedById(this.id);
   },
-  watch: {
-    _climbedIdSet() {
-      this.hasClimbed = this.getHasClimbedById(this.id);
-    },
-  }
+  mounted() {
+    // stateの値の変更を検知する（ミューテーション実行後の値を取得）
+    this.$store.subscribe((mutation) => {
+      if (['getHasClimbedById', 'addClimbedId', 'deleteClimbedId'].includes(mutation.type)) {
+        this.hasClimbed = this.getHasClimbedById(this.id);
+      }
+    });
+  },
 }
 
 </script>
