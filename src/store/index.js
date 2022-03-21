@@ -33,8 +33,14 @@ export default new Vuex.Store({
     deleteClimbedId(state, id) {
       state.climbedIdSet.delete(id);
     },
-    setRouteMap(state, routeMap) {
+    initRouteMap(state, routeMap) {
       state.routeMap = routeMap;
+    },
+    setRouteMap(state, route) {
+      state.routeMap.set(route.id, route);
+    },
+    deleteRouteMap(state, id) {
+      state.routeMap.delete(id);
     },
     setMatrixMap(state, matrixMap) {
       state.matrixMap = matrixMap;
@@ -87,6 +93,7 @@ export default new Vuex.Store({
       commit('deleteClimbedId', id);
     },
     async setRoutes({commit, getters}) {
+      // TODO:マトリクスのデータ構造でリファクタリングで削除
       // デフォルトの山情報を取得
       let routesMap = new Map([
         ...Object.entries(dummy),
@@ -95,15 +102,31 @@ export default new Vuex.Store({
       ]);
       const matrixMap = new Map();
 
+      // ルートのリストを作成
+      let routeArr = Object.entries(dummy).map(([publisherKey, routeArr]) => {
+        return routeArr.map(route => {
+          route.id = publisherKey + "-" + route.index;
+          route.publisher = PUBLISHER[publisherKey];
+          // Mapに格納するためにidと値の配列にする
+          return [route.id, route];
+        })
+      }).flat();
+
       // fierbaseからusersが登録しているroutesコレクションを取得
-      const othreArr = routesMap.get('other');
+      const oldOthreArr = routesMap.get('other');
+      const othreArr = [];
       const routeDocs = await getDocs(collection(db, "users", getters.uid, "routes"));
       routeDocs.forEach(doc => {
         let data = doc.data();
         data.id = doc.id;
         data.publisherKey = "other";
-        othreArr.push(data);
+        oldOthreArr.push(data);
+        data.publisher = PUBLISHER.other;
+        // Mapに格納するためにidと値の配列にする
+        othreArr.push([data.id, data]);
       });
+
+      const routeMap = new Map([...routeArr, ...othreArr]);
 
       // すべて用の配列とマトリクス用のマップを作成
       const allArr = [];
@@ -124,10 +147,9 @@ export default new Vuex.Store({
         });
         allArr.push(...routeArr);
       });
-      routesMap.set("all", allArr);
 
       // ステートのルート情報にデータを格納
-      commit('setRouteMap', routesMap);
+      commit('initRouteMap', routeMap);
       commit('setMatrixMap', matrixMap);
     },
     async addRoute({commit, getters}, route) {
@@ -138,11 +160,6 @@ export default new Vuex.Store({
       route.id = routeDoc.id;
       route.publisher = PUBLISHER.other;
       route.publisherKey = "other";
-
-      // リスト用のマップに追加
-      const routesMap = new Map(getters.routeMap);
-      routesMap.get('other').push(route);
-      routesMap.get('all').push(route);
 
       // マトリクス用のマップに追加
       const matrixMap = new Map(getters.matrixMap);
@@ -155,27 +172,14 @@ export default new Vuex.Store({
       addRouteToMatrixMap(gradeingMap, "other", route);
 
       // ステートのルート情報にデータを格納
-      commit('setRouteMap', routesMap);
+      commit('setRouteMap', route);
       commit('setMatrixMap', matrixMap);
     },
     async updateRoute({commit, getters}, route) {
       // fierbaseのusersのroutesコレクションの対象のドキュメントを上書きする
       await setDoc(doc(db, "users", getters.uid, "routes", route.id), route);
 
-      // リスト用のマップの更新
-      const routesMap = new Map(getters.routeMap);
-      let updateTarget;
-
-      ['other', 'all'].forEach(value => {
-        let targetArr = routesMap.get(value);
-        for(let i=0; i< targetArr.length; i++) {
-          if(targetArr[i].id === route.id) {
-            updateTarget = targetArr[i];
-            targetArr[i] = route;
-            break;
-          }
-        }
-      });
+      const updateTarget = getters.getRouteById(route.id);
 
       // マトリクス用のマップの更新
       const matrixMap = new Map(getters.matrixMap);
@@ -197,24 +201,12 @@ export default new Vuex.Store({
       addRouteToMatrixMap(gradeingMap, "other", route);
 
       // ステートのルート情報にデータを格納
-      commit('setRouteMap', routesMap);
+      commit('setRouteMap', route);
       commit('setMatrixMap', matrixMap);
     },
     async deleteRoute({commit, getters}, target) {
       // fierbaseのusersのroutesコレクションの対象のドキュメントを削除する
       await deleteDoc(doc(db, "users", getters.uid, "routes", target.id));
-
-      // リスト用のマップから対象のルートを削除
-      const routesMap = new Map(getters.routeMap);
-      ['other', 'all'].forEach(value => {
-        let targetArr = routesMap.get(value);
-        for(let i=0; i< targetArr.length; i++) {
-          if(targetArr[i].id === target.id) {
-            targetArr.splice(i,1);
-            break;
-          }
-        }
-      });
 
       // マトリクス用のマップから対象のルートを削除
       const matrixMap = new Map(getters.matrixMap);
@@ -224,7 +216,7 @@ export default new Vuex.Store({
       deleteRouteFromMatrixMap(targetGrade, "all", target);
 
       // ステートのルート情報にデータを格納
-      commit('setRouteMap', routesMap);
+      commit('deleteRouteMap', target.id);
       commit('setMatrixMap', matrixMap);
     },
   },
@@ -234,11 +226,11 @@ export default new Vuex.Store({
     uid: state => state.login_user ? state.login_user.uid : null,
     getHasClimbedById: state => id => state.climbedIdSet.has(id),
     matrixMap: state => state.matrixMap,
-    getRouteById: state => id => {
-      const allRouteArr = state.routeMap.get("all");
-      return allRouteArr.find(val => val.id === id );
+    getRouteById: state => id => state.routeMap.get(id),
+    getRoutes: state => () => {
+      const obj = Object.fromEntries(state.routeMap);
+      return Object.values(obj);
     },
-    routeMap: state => state.routeMap,
   }
 })
 

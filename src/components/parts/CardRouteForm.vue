@@ -232,7 +232,7 @@ export default {
   mounted() {
     // stateの値の変更を検知する（ミューテーション実行後の値を取得）
     this.$store.subscribe((mutation) => {
-      if (mutation.type === 'setRouteMap' && this.id) {
+      if (mutation.type === 'initRouteMap' && this.id) {
         this.route = { ...this.getRouteById(this.id) };
       }
     });

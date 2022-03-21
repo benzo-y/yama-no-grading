@@ -178,7 +178,7 @@ export default {
     DialogRouteDel,
   },
   computed: {
-    ...mapGetters(["routeMap", "getHasClimbedById"]),
+    ...mapGetters(["getHasClimbedById", "getRoutes"]),
     headers() {
       return [
         {
@@ -256,11 +256,11 @@ export default {
     },
   },
   mounted() {
-    this.routes = this.routeMap.get("all");
+    this.routes = this.getRoutes();
     // stateの値の変更を検知する（ミューテーション実行後の値を取得）
     this.$store.subscribe((mutation) => {
-      if (mutation.type === 'setRouteMap') {
-        this.routes = [...this.routeMap.get("all")];
+      if (['initRouteMap', 'setRouteMap', 'deleteRouteMap'].includes(mutation.type)) {
+        this.routes = this.getRoutes();
       }
     });
   },
