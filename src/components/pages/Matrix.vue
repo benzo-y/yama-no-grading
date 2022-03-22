@@ -2,10 +2,7 @@
   <v-container class="text-sm-body-2 mt-5" fluid>
     <v-row>
       <v-col cols="12">
-        <CardFilterVue
-          :changePublisher.sync="publisherValue"
-          :changeClimbed.sync="climbedValue"
-        />
+        <CardFilterVue/>
       </v-col>
       <v-col cols="12">
         <v-row v-for="phy in physical" :key="phy.grade">
@@ -18,7 +15,7 @@
             class="col-11-5"
           >
             <CardRouteListVue
-              :routes="createRouteList(phy.grade, tech.grade)"
+              :grade="{physical: phy.grade, technological: tech.grade}"
               :getSelectedRouteId.sync="dialog"
             />
           </v-col>
@@ -60,16 +57,12 @@ import CardFilterVue from "./matrix/CardFilter.vue";
 import CardRouteForm from "../parts/CardRouteForm.vue"
 import TooltipAxis from "./matrix/TooltipAxis.vue";
 import { MATRIX_AXIS } from "../../const/const";
-import { mapGetters } from "vuex"
 
 export default {
     data: () => ({
       routes: [],
-      matrix: new Map(),
       physical: MATRIX_AXIS.physical,
       technological: MATRIX_AXIS.technological,
-      publisherValue: [],
-      climbedValue: [],
       dialog: {
         isShow: false,
         id: null,
@@ -81,48 +74,6 @@ export default {
       CardRouteForm,
       TooltipAxis
     },
-    computed: {
-      ...mapGetters(["matrixMap", "getHasClimbedById"]),
-    },
-    mounted() {
-      // stateの値の変更を検知する（ミューテーション実行後の値を取得）
-      this.$store.subscribe((mutation) => {
-        if (mutation.type === 'setMatrixMap') {
-          this.matrix = this.matrixMap;
-        }
-      });
-    },
-    methods: {
-      createRouteList(physical, technological) {
-        // ストアから体力と技術難易度に一致するルートのマップを取得
-        const routeListMap = this.matrixMap.get(physical + "-" + technological);
-        let result = [];
-
-        // リストがない場合は空配列を返す
-        if (!this.matrixMap.size || !routeListMap) {
-          return result;
-        }
-
-        // 発行元でフィルタ
-        if(this.publisherValue.length) {
-          this.publisherValue.forEach(publisher => {
-            if(routeListMap.has(publisher)) {
-              result = [...result, ...routeListMap.get(publisher)];
-            }
-          });
-        } else {
-          result = routeListMap.get("all");
-        }
-
-        // 登頂チェックでフィルタ
-        if(this.climbedValue.length == 1 && this.climbedValue[0]) {
-          result = result.filter(val => this.getHasClimbedById(val.id));
-        } else if(this.climbedValue.length == 1 && !this.climbedValue[0]) {
-          result = result.filter(val => !this.getHasClimbedById(val.id));
-        }
-        return result
-      }
-    }
   }
 </script>
 

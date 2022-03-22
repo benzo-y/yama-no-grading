@@ -4,7 +4,7 @@
       <v-col cols="1"></v-col>
       <v-col cols="8">
         <v-select
-          v-model="publisherValue"
+          v-model="selectedValue.publisher"
           multiple
           chips
           dense
@@ -17,7 +17,7 @@
       </v-col>
       <v-col cols="2">
         <v-select
-          v-model="climbedValue"
+          v-model="selectedValue.climbed"
           multiple
           chips
           dense
@@ -45,20 +45,30 @@
 
 <script>
 import { PUBLISHER_ITEMS, CLIMBED_ICON_ITEMS } from "../../../const/const"
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   data: () => ({
-      publisherItem: PUBLISHER_ITEMS,
-      climbedItem: CLIMBED_ICON_ITEMS,
-      publisherValue: [],
-      climbedValue: [],
+    publisherItem: PUBLISHER_ITEMS,
+    climbedItem: CLIMBED_ICON_ITEMS,
+    selectedValue: {
+      publisher: [],
+      climbed: [],
+    },
   }),
+  computed: {
+    ...mapGetters(["getMatrixFilterValue"]),
+  },
+  created() {
+    this.selectedValue = this.getMatrixFilterValue();
+  },
   methods: {
+    ...mapActions(["setMatrixFilterValue"]),
     changePublisher () {
-      this.$emit('update:changePublisher', this.publisherValue)
+      this.setMatrixFilterValue(this.selectedValue);
     },
     changeClimbed () {
-      this.$emit('update:changeClimbed', this.climbedValue)
+      this.setMatrixFilterValue(this.selectedValue);
     },
   },
 }
