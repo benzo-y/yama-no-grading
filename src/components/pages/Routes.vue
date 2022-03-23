@@ -53,10 +53,10 @@
             <td v-for="header,index in headers" :key="index">
               <v-select
                 v-if="'filter' in header"
-                :items="filter[header.value].items"
+                :items="selectItems[header.value]"
                 item-text="name"
                 item-value="value"
-                v-model="filter[header.value].selected"
+                v-model="selectedValues[header.value]"
               >
                 <template v-if="header.value === 'climbed'" v-slot:[`selection`]="{ item }">
                   <v-icon v-if="item.color" :color="item.color">mdi-trophy</v-icon>
@@ -82,96 +82,28 @@ import IconClimbed from "../parts/IconClimbed.vue";
 import { PHYSICAL, TECHNOLOGICAL,PUBLISHER_ITEMS, CLIMBED_ICON_ITEMS } from "../../const/const";
 import DialogRouteDel from "./routes/DialogRouteDel.vue";
 
-const ELEVATION_INCREMENTS = 500;
-const ELEVATION_MAX = 3500;
-const TIME_INCREMENTS = 10;
-const TIME_MAX = 50;
-const LENGTH_INCREMENTS = 10;
-const LENGTH_MAX = 50;
-const CUM_ELEVATION_INCREMENTS = 1;
-const CUM_ELEVATION_MAX = 5;
-const ROUTE_COEF_INCREMENTS = 20;
-const ROUTE_COEF_MAX = 100;
-
-// 「○○～○○」「○○～」の範囲のセレクトの選択肢を作成
-function createSelecrItems(increments, max) {
-  const arr = [{value: 0, name: ""}];
-  let i;
-  for(i=1; i*increments <= max; i++) {
-    arr.push({
-      value: i,
-      name: (increments*(i-1)) + "～" + (increments*i)
-    });
-  }
-  // 末尾は「○○～」にする
-  arr.push({value: i, name: max + "～"});
-  return arr;
-}
+const FILTER_RANGE_ELEVATION = {increments: 500, max: 3500};
+const FILTER_RANGE_TIME = {increments: 10, max: 50};
+const FILTER_RANGE_LENGTH = {increments: 10, max: 50};
+const FILTER_RANGE_CUM_ELEVATION = {increments: 1, max: 5};
+const FILTER_RANGE_ROUTE_COEF = {increments: 20, max: 100};
 
 export default {
   data: () => ({
     search: '',
-    filter: {
-      physical: {
-        items: [
-          {value: null, name: ""},
-          ...PHYSICAL.map((v,i) => ({value:i+1, name:v})),
-        ],
-        selected: null,
-      },
-      technological: {
-        items: [
-          {value: null, name: ""},
-          ...TECHNOLOGICAL.map((v,i) => ({value:i+1, name:v})),
-        ],
-        selected: null,
-      },
-      start_point_elevation: {
-        items: createSelecrItems(ELEVATION_INCREMENTS, ELEVATION_MAX),
-        selected: null,
-      },
-      highest_point_elevation: {
-        items: createSelecrItems(ELEVATION_INCREMENTS, ELEVATION_MAX),
-        selected: null,
-      },
-      end_point_elevation: {
-        items: createSelecrItems(ELEVATION_INCREMENTS, ELEVATION_MAX),
-        selected: null,
-      },
-      course_time: {
-        items: createSelecrItems(TIME_INCREMENTS, TIME_MAX),
-        selected: null,
-      },
-      length: {
-        items: createSelecrItems(LENGTH_INCREMENTS, LENGTH_MAX),
-        selected: null,
-      },
-      cum_up_elevation: {
-        items: createSelecrItems(CUM_ELEVATION_INCREMENTS, CUM_ELEVATION_MAX),
-        selected: null,
-      },
-      cum_down_elevation: {
-        items: createSelecrItems(CUM_ELEVATION_INCREMENTS, CUM_ELEVATION_MAX),
-        selected: null,
-      },
-      route_coef: {
-        items: createSelecrItems(ROUTE_COEF_INCREMENTS, ROUTE_COEF_MAX),
-        selected: null,
-      },
-      publisher: {
-        items: [
-          {value: null, name: ""},
-          ...PUBLISHER_ITEMS
-        ],
-        selected: null,
-      },
-      climbed: {
-        items: [
-          {value: null},
-          ...CLIMBED_ICON_ITEMS,
-        ],
-        selected: null,
-      },
+    selectedValues: {
+      physical: null,
+      technological: null,
+      start_point_elevation: null,
+      highest_point_elevation: null,
+      end_point_elevation: null,
+      course_time: null,
+      length: null,
+      cum_up_elevation: null,
+      cum_down_elevation: null,
+      route_coef: null,
+      publisher: null,
+      climbed: null,
     },
     routes: [],
     deleteDialog: {
@@ -207,44 +139,44 @@ export default {
         { text:
           'スタート地点（標高）',
           value: 'start_point_elevation',
-          filter: value => this.filterUseIncrements(value, 'start_point_elevation', ELEVATION_INCREMENTS),
+          filter: value => this.filterUseIncrements(value, 'start_point_elevation', FILTER_RANGE_ELEVATION),
         },
         { text: 'ルート最高地点（地名）', value: 'highest_point_name' },
         { text:
           'ルート最高地点（標高）',
           value: 'highest_point_elevation',
-          filter: value => this.filterUseIncrements(value, 'highest_point_elevation', ELEVATION_INCREMENTS),
+          filter: value => this.filterUseIncrements(value, 'highest_point_elevation', FILTER_RANGE_ELEVATION),
         },
         { text: '終了地点（地名）', value: 'end_point_name' },
         {
           text: '終了地点（標高）',
           value: 'end_point_elevation',
-          filter: value => this.filterUseIncrements(value, 'end_point_elevation', ELEVATION_INCREMENTS),
+          filter: value => this.filterUseIncrements(value, 'end_point_elevation', FILTER_RANGE_ELEVATION),
           },
         {
           text: 'コースタイム',
           value: 'course_time',
-          filter: value => this.filterUseIncrements(value, 'course_time', TIME_INCREMENTS),
+          filter: value => this.filterUseIncrements(value, 'course_time', FILTER_RANGE_TIME),
           },
         {
           text: 'ルート長',
           value: 'length',
-          filter: value => this.filterUseIncrements(value, 'length', LENGTH_INCREMENTS),
+          filter: value => this.filterUseIncrements(value, 'length', FILTER_RANGE_LENGTH),
           },
         {
           text: '累計登り標高差',
           value: 'cum_up_elevation',
-          filter: value => this.filterUseIncrements(value, 'cum_up_elevation', CUM_ELEVATION_INCREMENTS),
+          filter: value => this.filterUseIncrements(value, 'cum_up_elevation', FILTER_RANGE_CUM_ELEVATION),
           },
         {
           text: '累計下り標高差',
           value: 'cum_down_elevation',
-          filter: value => this.filterUseIncrements(value, 'cum_down_elevation', CUM_ELEVATION_INCREMENTS),
+          filter: value => this.filterUseIncrements(value, 'cum_down_elevation', FILTER_RANGE_CUM_ELEVATION),
         },
         {
           text: 'ルート係数',
           value: 'route_coef',
-          filter: value => this.filterUseIncrements(value, 'route_coef', ROUTE_COEF_INCREMENTS),
+          filter: value => this.filterUseIncrements(value, 'route_coef', FILTER_RANGE_ROUTE_COEF),
         },
         {
           text: '発行元',
@@ -259,6 +191,22 @@ export default {
         },
         { text: '', value: 'actions', sortable: false },
       ]
+    },
+    selectItems() {
+      return {
+        physical:                 [{value: null, name: ""}, ...PHYSICAL.map((v,i) => ({value: i+1, name: v}))],
+        technological:            [{value: null, name: ""}, ...TECHNOLOGICAL.map((v,i) => ({value: i+1, name: v}))],
+        start_point_elevation:    this.createSelecrItems(FILTER_RANGE_ELEVATION),
+        highest_point_elevation:  this.createSelecrItems(FILTER_RANGE_ELEVATION),
+        end_point_elevation:      this.createSelecrItems(FILTER_RANGE_ELEVATION),
+        course_time:              this.createSelecrItems(FILTER_RANGE_TIME),
+        length:                   this.createSelecrItems(FILTER_RANGE_LENGTH),
+        cum_up_elevation:         this.createSelecrItems(FILTER_RANGE_CUM_ELEVATION),
+        cum_down_elevation:       this.createSelecrItems(FILTER_RANGE_CUM_ELEVATION),
+        route_coef:               this.createSelecrItems(FILTER_RANGE_ROUTE_COEF),
+        publisher:                [{value: null, name: ""}, ...PUBLISHER_ITEMS],
+        climbed:                  [{value: null}, ...CLIMBED_ICON_ITEMS],
+      }
     },
   },
   mounted() {
@@ -278,24 +226,28 @@ export default {
         value.toString().toLocaleUpperCase().indexOf(search) !== -1
     },
     // グレードのフィルタ：一致したものを表示する
-    filterBySelectedName(value, key) {
-      let target = this.filter[key];
-      if (!target.selected) return true;
-      // セレクトで選択した項目を取得して値の比較をする
-      const selectedItem = target.items.find(item => item.value === target.selected) || {};
-      return value === selectedItem.name;
+    filterBySelectedName(dataValue, key) {
+      let selectedValue = this.selectedValues[key];
+      let items = this.selectItems[key];
+      // 未選択はすべてtrue
+      if (!selectedValue) return true;
+      // セレクトの中から選択した項目の比較をする、セレクトで選んだ値がvalueでデータの値がnameに相当するので両方確認する
+      return items.some(item => item.value === selectedValue && item.name === dataValue);
     },
     // ○○～○○の範囲を選択するフィルタ：一致したものを表示する、0～10の場合は0以上、10以下
-    filterUseIncrements(value, key, increments) {
-      let target = this.filter[key];
-      if (!target.selected) return true;
-      // 選択した値が配列の一番最後だった場合、「以上の」チェックだけする
-      if (target.selected === (target.items.length-1)) return increments*(target.selected-1) <= value;
-      return increments*(target.selected-1) <= value && value <= increments*target.selected;
+    filterUseIncrements(dataValue, key, range) {
+      let selectedValue = this.selectedValues[key];
+      let items = this.selectItems[key];
+      // 未選択はすべてtrue
+      if (!selectedValue) return true;
+      // 選択した値が配列の一番最後だった場合、「以上」のチェックだけする
+      if (selectedValue === (items.length-1)) return range.max <= dataValue;
+      // 範囲内にデータの値があるか確認する
+      return range.increments*(selectedValue-1) <= dataValue && dataValue <= range.increments*selectedValue;
     },
     // 登頂チェックのフィルタ
     filterClimbed(key, item) {
-      let selectedValue = this.filter[key].selected;
+      let selectedValue = this.selectedValues[key];
       // 未選択はすべてtrue
       if (selectedValue === null) return true;
       // 登頂チェックに値があるか確認
@@ -306,6 +258,20 @@ export default {
       this.deleteDialog.target = target;
       this.deleteDialog.isShow = true;
     },
+    // 「○○～○○」「○○～」の範囲のセレクトの選択肢を作成
+    createSelecrItems(range) {
+      const arr = [{value: 0, name: ""}];
+      let i;
+      for(i=1; i*range.increments <= range.max; i++) {
+        arr.push({
+          value: i,
+          name: (range.increments*(i-1)) + "～" + (range.increments*i)
+        });
+      }
+      // 末尾は「○○～」にする
+      arr.push({value: i, name: range.max + "～"});
+      return arr;
+    }
   },
 }
 </script>
