@@ -6,6 +6,7 @@
           新規作成
         </v-btn>
         <v-spacer></v-spacer>
+        <!-- テキストフィルタ -->
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -14,6 +15,7 @@
           hide-details
         ></v-text-field>
       </v-card-actions>
+      <!-- データテーブル -->
       <v-data-table
         :headers="headers"
         :items="routes"
@@ -21,14 +23,17 @@
         :search="search"
         :custom-filter="filterOnlyCapsText"
       >
+        <!-- テーブルヘッダーの登頂チェックアイコン -->
         <template v-slot:[`header.climbed`]>
           <v-layout>
             <v-icon>mdi-trophy-outline</v-icon>
           </v-layout>
         </template>
+        <!-- テーブル内の登頂チェックアイコン -->
         <template v-slot:[`item.climbed`]="{ item }">
           <IconClimbed :id="item.id"/>
         </template>
+        <!-- テーブル内のアクションアイコン -->
         <template v-slot:[`item.actions`]="{ item }">
           <v-layout
             v-if="item.publisherKey==='other'"
@@ -37,11 +42,12 @@
             <v-btn icon :to="{ name: 'route_edit', params: { route_id: item.id }}">
               <v-icon class="mr-1">mdi-pencil</v-icon>
             </v-btn>
-            <v-btn icon @click="cleckDeleteIcon(item)">
+            <v-btn icon @click="clickDeleteIcon(item)">
               <v-icon class="ml-1">mdi-delete</v-icon>
             </v-btn>
           </v-layout>
         </template>
+        <!-- セレクトフィルタ -->
         <template v-slot:[`body.append`]>
           <tr>
             <td v-for="header,index in headers" :key="index">
@@ -296,7 +302,7 @@ export default {
       let targetClimbed = this.getHasClimbedById(item.id);
       return selectedValue ? targetClimbed : !targetClimbed;
     },
-    cleckDeleteIcon(target) {
+    clickDeleteIcon(target) {
       this.deleteDialog.target = target;
       this.deleteDialog.isShow = true;
     },
