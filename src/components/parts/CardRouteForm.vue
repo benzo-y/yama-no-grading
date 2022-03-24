@@ -16,61 +16,67 @@
         <template
           v-for="item, property in form"
         >
+          <!-- ルート名称のテキストボックス（登録・編集のみ表示） -->
           <v-text-field
             v-if="item.type==='title' && mode==='edit'"
-            v-model="route[property]"
             :label="item.label"
-            :rules="item.rules"
             :key="property"
+            v-model="route[property]"
+            :rules="rules[property]"
           >
           </v-text-field>
+          <!-- 各名称のテキストボックス -->
           <v-text-field
             v-if="item.type==='text'"
-            v-model="route[property]"
             :label="item.label"
-            :rules="item.rules"
-            :readonly="mode==='read'"
             :key="property"
+            v-model="route[property]"
+            :rules="rules[property]"
+            :readonly="mode==='read'"
           >
           </v-text-field>
+          <!-- 各数値のテキストボックス -->
           <v-text-field
             v-if="item.type==='number'"
+            :label="item.label"
+            :key="property"
+            v-model.number="route[property]"
+            :rules="rules[property]"
+            :readonly="mode==='read'"
             type="number"
             min="0"
             :max="item.max"
-            v-model.number="route[property]"
-            :label="item.label"
-            :rules="item.rules"
-            :readonly="mode==='read'"
-            :key="property"
           >
           </v-text-field>
+          <!-- 自動計算（体力度、ルート係数）のテキストボックス -->
           <v-text-field
             v-if="item.type==='auto'"
-            v-model.number="autoInputValues[property]"
             :label="item.label"
+            :key="property"
+            v-model.number="autoInputValues[property]"
             readonly
             placeholder="自動で計算されます。"
-            :key="property"
           >
           </v-text-field>
+          <!-- 技術的難易度のセレクトボックス -->
           <v-select
             v-if="item.type==='select'"
-            :items="item.items"
-            v-model="route[property]"
             :label="item.label"
-            :rules="item.rules"
-            :readonly="mode==='read'"
             :key="property"
+            v-model="route[property]"
+            :rules="rules[property]"
+            :readonly="mode==='read'"
+            :items="item.items"
           >
           </v-select>
+          <!-- 発行元（参照時のみ表示） -->
           <v-text-field
             v-if="!item.type && mode==='read'"
-            v-model="route[property]"
             :label="item.label"
-            :rules="item.rules"
-            readonly
             :key="property"
+            v-model="route[property]"
+            :rules="rules[property]"
+            readonly
           >
           </v-text-field>
         </template>
@@ -96,16 +102,20 @@ import IconClimbed from "./IconClimbed.vue"
 import { mapGetters } from "vuex"
 import { TECHNOLOGICAL } from "../../const/const"
 
+const MAX_TEXT = 100;
+const MAX_ELEVATION = 8848;
+const MAX_TIME = 1000;
+const MAX_LENGTH = 10000;
+const MAX_CUM_ELEVATION = 100;
+
 export default {
   components: {IconClimbed},
   data: () => ({
+    route: {},
     form: {
       name : {
         label: 'ルート名称',
         type: 'title',
-        rules: [
-          v => (v && v.length <= 100) || '100文字以内で値を入力してください。',
-        ],
       },
       physical : {
         label:'体力度',
@@ -116,86 +126,53 @@ export default {
         label:'技術的難易度',
         type: 'select',
         items: TECHNOLOGICAL,
-        rules: [
-          v => !!v || '選択してください。',
-        ],
       },
       start_point_name : {
         label:'スタート地点 地名',
         type: 'text',
-        rules: [
-          v => (v && v.length <= 100) || '100文字以内で値を入力してください。',
-        ],
       },
       start_point_elevation : {
         label:'スタート地点 標高（m）',
         type: 'number',
-        max: 8848,
-        rules: [
-          v => (1 <= v && v <= 8848) || '1～8848の範囲で値を入力してください。',
-        ],
-        },
+        max: MAX_ELEVATION,
+      },
       highest_point_name : {
         label:'最高地点 名称',
         type: 'text',
-        rules: [
-          v => (v && v.length <= 100) || '100文字以内で値を入力してください。',
-        ],
       },
       highest_point_elevation : {
         label:'最高地点 標高（m）',
         type: 'number',
-        max: 8848,
-        rules: [
-          v => (1 <= v && v <= 8848) || '1～8848の範囲で値を入力してください。',
-        ],
+        max: MAX_ELEVATION,
       },
       end_point_name : {
         label:'終了地点 名称',
         type: 'text',
-        rules: [
-          v => (v && v.length <= 100) || '100文字以内で値を入力してください。',
-        ],
       },
       end_point_elevation : {
         label:'終了地点 標高（m）',
         type: 'number',
-        max: 8848,
-        rules: [
-          v => (1 <= v && v <= 8848) || '1～8848の範囲で値を入力してください。',
-        ],
+        max: MAX_ELEVATION,
       },
       course_time : {
         label:'コースタイム（h）',
         type: 'number',
-        max: 1000,
-        rules: [
-          v => (1 <= v && v <= 1000) || '1～1000の範囲で値を入力してください。',
-        ],
+        max: MAX_TIME,
       },
       length : {
         label:'ルート長（km）',
         type: 'number',
-        max: 10000,
-        rules: [
-          v => (1 <= v && v <= 10000) || '1～10000の範囲で値を入力してください。',
-        ],
+        max: MAX_LENGTH,
       },
       cum_up_elevation : {
         label:'累計登り標高差（km）',
         type: 'number',
-        max: 1000,
-        rules: [
-          v => (1 <= v && v <= 1000) || '1～1000の範囲で値を入力してください。',
-        ],
+        max: MAX_CUM_ELEVATION,
       },
       cum_down_elevation : {
         label:'累計下り標高差（km）',
         type: 'number',
-        max: 1000,
-        rules: [
-          v => (1 <= v && v <= 1000) || '1～1000の範囲で値を入力してください。',
-        ],
+        max: MAX_CUM_ELEVATION,
       },
       route_coef : {
         label:'ルート係数',
@@ -205,8 +182,6 @@ export default {
         label:'発行元',
       },
     },
-    route: {},
-    climbed: false
   }),
   props: {
     id: {type: String},
@@ -217,11 +192,32 @@ export default {
     autoInputValues() {
       let physical, route_coef
       if(this.route.course_time && this.route.length && this.route.cum_up_elevation && this.route.cum_down_elevation) {
+        // 体力度とルート係数の計算
         route_coef = this.route.course_time*1.8 + this.route.length*0.3 +
           this.route.cum_up_elevation*10.0 + this.route.cum_down_elevation*0.6;
         physical = route_coef/10 < 10 ? Math.floor(route_coef/10) : 10;
       }
       return { physical, route_coef };
+    },
+    rules() {
+      const rules = {};
+      Object.entries(this.form).forEach(([key, value]) => {
+        switch(value.type) {
+          case "title":
+          case "text":
+            rules[key] = [v => (v && v.length <= MAX_TEXT) || `${MAX_TEXT}文字以内で値を入力してください。`,];
+            break;
+          case "number":
+            rules[key] =  [v => (1 <= v && v <= value.max) || `1～${value.max}の範囲で値を入力してください。`,];
+            break;
+          case "select":
+            rules[key] =  [v => !!v || '選択してください。',];
+            break;
+          default:
+            rules[key] =  [];
+        }
+      });
+      return rules;
     }
   },
   created() {
@@ -246,7 +242,7 @@ export default {
     },
     clickOk() {
       if(this.$refs.form.validate()) {
-        this.$emit('update:clickOk', {...this.route, ...this.autoInputValues });
+        this.$emit('update:clickOk', { ...this.route, ...this.autoInputValues });
       }
     },
   },
