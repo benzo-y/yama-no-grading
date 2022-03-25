@@ -26,7 +26,7 @@
         size="36"
         v-if="$store.state.login_user"
       >
-        <img 
+        <img
           :src="$store.state.login_user.photoURL"
           :alt="$store.state.login_user.displayName"
         />
@@ -74,7 +74,7 @@ export default {
       if(user) {
         this.setLoginUser(user);
         this.setClimbedIds();
-        this.setRoutes();
+        this.initRouteMap();
         if(this.$route.path === "/" ){
           this.$router.push({ name: 'matrix' }, () => {})
         }
@@ -85,7 +85,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(['setLoginUser', 'setClimbedIds', 'setRoutes','deleteLoginUser', 'logout'])
+    ...mapActions(['setLoginUser', 'setClimbedIds', 'initRouteMap','deleteLoginUser', 'logout'])
   }
 };
 </script>

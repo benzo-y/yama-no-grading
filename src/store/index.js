@@ -17,7 +17,7 @@ export default new Vuex.Store({
     login_user: null,
     climbedIdSet: new Set(),
     routeMap: new Map(),
-    MatrixFilterValue: {
+    matrixFilterValue: {
       publisher: Object.keys(PUBLISHER),
       climbed: [true, false],
     },
@@ -48,7 +48,7 @@ export default new Vuex.Store({
       state.routeMap.delete(id);
     },
     setMatrixFilterValue(state, selectedValue) {
-      state.MatrixFilterValue = selectedValue;
+      state.matrixFilterValue = selectedValue;
     },
   },
   actions: {
@@ -97,7 +97,7 @@ export default new Vuex.Store({
       // ステートの登頂チェックにルートのIDを削除
       commit('deleteClimbedId', id);
     },
-    async setRoutes({commit, getters}) {
+    async initRouteMap({commit, getters}) {
       const routeMap = new Map();
       // 各自治体のルート情報を作成
       Object.entries(gradingData).forEach(([publisherKey, routeArr]) => {
@@ -130,8 +130,8 @@ export default new Vuex.Store({
 
       // 登録結果からストアに格納するデータを設定
       route.id = routeDoc.id;
-      route.publisher = PUBLISHER.other;
       route.publisherKey = "other";
+      route.publisher = PUBLISHER.other;
 
       // ステートのルート情報にデータを格納
       commit('setRouteMap', route);
@@ -169,6 +169,6 @@ export default new Vuex.Store({
       const allRoutes = Object.values(obj);
       return allRoutes.filter(route => route.physical === phy && route.technological === tech);
     },
-    getMatrixFilterValue: state => () => ({...state.MatrixFilterValue}),
+    getMatrixFilterValue: state => () => ({...state.matrixFilterValue}),
   },
 })
