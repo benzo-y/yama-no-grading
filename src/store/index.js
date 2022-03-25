@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { GoogleAuthProvider, getAuth, signInWithRedirect, signOut } from "firebase/auth";
-import { doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, collection, arrayUnion, arrayRemove } from "firebase/firestore";
+import {
+  doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, collection, arrayUnion, arrayRemove
+} from "firebase/firestore";
 import { db } from '../plugins/firebase';
 import { PUBLISHER } from '../const/const'
 
 // ダミーデータ
-import dummy from '../dummyData/dummy.json';
+import gradingData from '../dummyData/gradingData';
 
 Vue.use(Vuex)
 
@@ -96,30 +98,28 @@ export default new Vuex.Store({
       commit('deleteClimbedId', id);
     },
     async setRoutes({commit, getters}) {
-      // ルートのリストを作成
-      let routeArr = Object.entries(dummy).map(([publisherKey, routeArr]) => {
-        return routeArr.map(route => {
+      const routeMap = new Map();
+      // 各自治体のルート情報を作成
+      Object.entries(gradingData).forEach(([publisherKey, routeArr]) => {
+        routeArr.forEach(route => {
           route.id = publisherKey + "-" + route.index;
           route.publisherKey = publisherKey;
           route.publisher = PUBLISHER[publisherKey];
-          // Mapに格納するためにidと値の配列にする
-          return [route.id, route];
+          // Mapに格納
+          routeMap.set(route.id, route);
         })
-      }).flat();
+      });
 
       // fierbaseからusersが登録しているroutesコレクションを取得
-      const othreArr = [];
       const routeDocs = await getDocs(collection(db, "users", getters.uid, "routes"));
       routeDocs.forEach(doc => {
         let data = doc.data();
         data.id = doc.id;
         data.publisherKey = "other";
         data.publisher = PUBLISHER.other;
-        // Mapに格納するためにidと値の配列にする
-        othreArr.push([data.id, data]);
+        // Mapに格納
+        routeMap.set(data.id, data);
       });
-
-      const routeMap = new Map([...routeArr, ...othreArr]);
 
       // ステートのルート情報にデータを格納
       commit('initRouteMap', routeMap);
