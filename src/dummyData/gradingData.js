@@ -1,10 +1,18 @@
 // ダミーデータ
 import nagano from './nagano.json';
+import yamanashi from './yamahashi.json'
 import hyaku from './hyaku.json';
 
 const gradingData = {
   nagano,
-  yamanashi: [
+  yamanashi,
+  shizuoka: [],
+  gunma: [],
+  gifu: [],
+  tochigi: [],
+  ishizuchisankei: [],
+  akita: [],
+  toyama: [
     {
       "index": 1,
       "name": "Dummy2",
@@ -23,13 +31,6 @@ const gradingData = {
       "route_coef": 1.2
     }
   ],
-  shizuoka: [],
-  gunma: [],
-  gifu: [],
-  tochigi: [],
-  ishizuchisankei: [],
-  akita: [],
-  toyama: [],
   hyaku
 };
 
