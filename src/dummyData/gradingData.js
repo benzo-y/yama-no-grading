@@ -1,12 +1,13 @@
 // ダミーデータ
 import nagano from './nagano.json';
 import yamanashi from './yamahashi.json'
+import shizuoka from './shizuoka.json'
 import hyaku from './hyaku.json';
 
 const gradingData = {
   nagano,
   yamanashi,
-  shizuoka: [],
+  shizuoka,
   gunma: [],
   gifu: [],
   tochigi: [],
