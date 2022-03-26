@@ -105,7 +105,7 @@ import { TECHNOLOGICAL } from "../../const/const"
 const MAX_TEXT = 100;
 const MAX_ELEVATION = 8848;
 const MAX_TIME = 1000;
-const MAX_LENGTH = 10000;
+const MAX_DISTANCE = 10000;
 const MAX_CUM_ELEVATION = 100;
 
 export default {
@@ -159,10 +159,10 @@ export default {
         type: 'number',
         max: MAX_TIME,
       },
-      length : {
+      distance : {
         label:'ルート長（km）',
         type: 'number',
-        max: MAX_LENGTH,
+        max: MAX_DISTANCE,
       },
       cum_up_elevation : {
         label:'累計登り標高差（km）',
@@ -191,9 +191,9 @@ export default {
     ...mapGetters(["getRouteById"]),
     autoInputValues() {
       let physical, route_coef
-      if(this.route.course_time && this.route.length && this.route.cum_up_elevation && this.route.cum_down_elevation) {
+      if(this.route.course_time && this.route.distance && this.route.cum_up_elevation && this.route.cum_down_elevation) {
         // 体力度とルート係数の計算
-        route_coef = this.route.course_time*1.8 + this.route.length*0.3 +
+        route_coef = this.route.course_time*1.8 + this.route.distance*0.3 +
           this.route.cum_up_elevation*10.0 + this.route.cum_down_elevation*0.6;
         physical = route_coef/10 < 10 ? Math.floor(route_coef/10) : 10;
       }

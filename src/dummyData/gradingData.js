@@ -26,7 +26,7 @@ const gradingData = {
       "end_point_name": "hoge",
       "end_point_elevation": 1234,
       "course_time": "12:34",
-      "length": 12,
+      "distance": 12,
       "cum_up_elevation": 1234,
       "cum_down_elevation": 1234,
       "route_coef": 1.2

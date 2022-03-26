@@ -84,7 +84,7 @@ import DialogRouteDel from "./routes/DialogRouteDel.vue";
 
 const FILTER_RANGE_ELEVATION = {increments: 500, max: 3500};
 const FILTER_RANGE_TIME = {increments: 10, max: 50};
-const FILTER_RANGE_LENGTH = {increments: 10, max: 50};
+const FILTER_RANGE_DISTANCE = {increments: 10, max: 50};
 const FILTER_RANGE_CUM_ELEVATION = {increments: 1, max: 5};
 const FILTER_RANGE_ROUTE_COEF = {increments: 20, max: 100};
 
@@ -98,7 +98,7 @@ export default {
       highest_point_elevation: null,
       end_point_elevation: null,
       course_time: null,
-      length: null,
+      distance: null,
       cum_up_elevation: null,
       cum_down_elevation: null,
       route_coef: null,
@@ -160,8 +160,8 @@ export default {
           },
         {
           text: 'ルート長',
-          value: 'length',
-          filter: value => this.filterUseIncrements(value, 'length', FILTER_RANGE_LENGTH),
+          value: 'distance',
+          filter: value => this.filterUseIncrements(value, 'distance', FILTER_RANGE_DISTANCE),
           },
         {
           text: '累計登り標高差',
@@ -200,7 +200,7 @@ export default {
         highest_point_elevation:  this.createSelecrItems(FILTER_RANGE_ELEVATION),
         end_point_elevation:      this.createSelecrItems(FILTER_RANGE_ELEVATION),
         course_time:              this.createSelecrItems(FILTER_RANGE_TIME),
-        length:                   this.createSelecrItems(FILTER_RANGE_LENGTH),
+        distance:                   this.createSelecrItems(FILTER_RANGE_DISTANCE),
         cum_up_elevation:         this.createSelecrItems(FILTER_RANGE_CUM_ELEVATION),
         cum_down_elevation:       this.createSelecrItems(FILTER_RANGE_CUM_ELEVATION),
         route_coef:               this.createSelecrItems(FILTER_RANGE_ROUTE_COEF),
