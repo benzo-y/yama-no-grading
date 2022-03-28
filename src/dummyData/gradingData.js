@@ -3,6 +3,7 @@ import nagano from './nagano.json';
 import yamanashi from './yamahashi.json';
 import shizuoka from './shizuoka.json';
 import niigata from './niigata.json';
+import tochigi from './tochigi.json'
 import ishizuchisankei from './ishizuchisankei.json'
 import akita from './akita.json'
 import toyama from './toyama.json'
@@ -33,7 +34,7 @@ const gradingData = {
     }
   ],
   gifu: [],
-  tochigi: [],
+  tochigi,
   ishizuchisankei,
   akita,
   toyama,
