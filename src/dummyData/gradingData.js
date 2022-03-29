@@ -3,6 +3,7 @@ import nagano from './nagano.json';
 import yamanashi from './yamahashi.json';
 import shizuoka from './shizuoka.json';
 import niigata from './niigata.json';
+import gunma from './gunma_2016.json';
 import tochigi from './tochigi.json'
 import ishizuchisankei from './ishizuchisankei.json'
 import akita from './akita.json'
@@ -14,7 +15,8 @@ const gradingData = {
   yamanashi,
   shizuoka,
   niigata,
-  gunma: [
+  gunma,
+  gifu: [
     {
       "index": 1,
       "name": "Dummy2",
@@ -33,7 +35,6 @@ const gradingData = {
       "route_coef": 1.2
     }
   ],
-  gifu: [],
   tochigi,
   ishizuchisankei,
   akita,
