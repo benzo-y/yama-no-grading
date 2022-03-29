@@ -4,10 +4,11 @@ import yamanashi from './yamahashi.json';
 import shizuoka from './shizuoka.json';
 import niigata from './niigata.json';
 import gunma from './gunma_2016.json';
-import tochigi from './tochigi.json'
-import ishizuchisankei from './ishizuchisankei.json'
-import akita from './akita.json'
-import toyama from './toyama.json'
+import gifu from './gifu_2016.json';
+import tochigi from './tochigi.json';
+import ishizuchisankei from './ishizuchisankei.json';
+import akita from './akita.json';
+import toyama from './toyama.json';
 import hyaku from './hyaku.json';
 
 const gradingData = {
@@ -16,25 +17,7 @@ const gradingData = {
   shizuoka,
   niigata,
   gunma,
-  gifu: [
-    {
-      "index": 1,
-      "name": "Dummy2",
-      "physical": 1,
-      "technological": "A",
-      "start_point_name": "hoge",
-      "start_point_elevation": 1234,
-      "highest_point_name": "hoge",
-      "highest_point_elevation": 1234,
-      "end_point_name": "hoge",
-      "end_point_elevation": 1234,
-      "course_time": "12:34",
-      "distance": 12,
-      "cum_up_elevation": 1234,
-      "cum_down_elevation": 1234,
-      "route_coef": 1.2
-    }
-  ],
+  gifu,
   tochigi,
   ishizuchisankei,
   akita,
