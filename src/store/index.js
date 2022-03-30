@@ -8,7 +8,7 @@ import { db } from '../plugins/firebase';
 import { PUBLISHER } from '../const/const'
 
 // ダミーデータ
-import gradingData from '../dummyData/gradingData';
+import gradingData from '../data/gradingData';
 
 Vue.use(Vuex)
 
