@@ -13,7 +13,26 @@
           item-value="value"
           label="発行元"
           @change="changePublisher"
-        ></v-select>
+        >
+          <template v-slot:prepend-item>
+            <v-list-item
+              @mousedown.prevent
+              @click="clickAll(changePublisher)"
+            >
+              <v-list-item-action>
+                <v-icon :color="selectAllIcon.color">
+                  {{ selectAllIcon.icon }}
+                </v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  全て
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider class="mt-2"></v-divider>
+          </template>
+        </v-select>
       </v-col>
       <v-col cols="2">
         <v-select
@@ -58,6 +77,18 @@ export default {
   }),
   computed: {
     ...mapGetters(["getMatrixFilterValue"]),
+    isSelectedAllPublisher () {
+      return this.selectedValue.publisher.length === this.publisherItem.length
+    },
+    selectAllIcon () {
+      let icon = (() => {
+        if (this.isSelectedAllPublisher) return 'mdi-close-box'
+        if (this.selectedValue.publisher.length > 0 && !this.isSelectedAllPublisher) return 'mdi-minus-box'
+        return 'mdi-checkbox-blank-outline'
+      })();
+      let color = this.selectedValue.publisher.length > 0 ? 'indigo darken-4' : '';
+      return {icon, color};
+    },
   },
   created() {
     this.selectedValue = this.getMatrixFilterValue();
@@ -69,6 +100,14 @@ export default {
     },
     changeClimbed () {
       this.setMatrixFilterValue(this.selectedValue);
+    },
+    clickAll(callback) {
+      if (this.isSelectedAllPublisher) {
+        this.selectedValue.publisher = []
+      } else {
+        this.selectedValue.publisher = this.publisherItem.map(item => item.value);
+      }
+      callback();
     },
   },
 }
