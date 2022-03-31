@@ -24,10 +24,6 @@ export default {
     dialog: false,
     showRouteId: null,
     routes: null,
-    selectedValue: {
-      publisher: [],
-      climbed: [],
-    },
   }),
   props: {
     grade: {type: Object},
@@ -38,23 +34,22 @@ export default {
   computed: {
     ...mapGetters(["getRoutesByGrade", "getHasClimbedById", "getMatrixFilterValue"]),
     filteredRoutes() {
+      const selectedValue = this.getMatrixFilterValue();
       return this.routes.filter(route => {
-        this.selectedValue = this.getMatrixFilterValue();
         // 発行元でフィルタ：未選択、または選択されたセレクトの中にルートの発行元がない場合、falseを返す
-        if (!this.selectedValue.publisher.includes(route.publisherKey)) return false;
+        if (!selectedValue.publisher.includes(route.publisherKey)) return false;
         // 登頂チェックでフィルタ：未選択の場合、falseを返す
-        if (!this.selectedValue.climbed.length) return false;
+        if (!selectedValue.climbed.length) return false;
         // 登頂チェックでフィルタ：選択された登頂チェックがtrueが存在、かつ登頂チェックに対象のIDがある場合、trueを返す
-        if (this.selectedValue.climbed.includes(true) && this.getHasClimbedById(route.id)) return true;
+        if (selectedValue.climbed.includes(true) && this.getHasClimbedById(route.id)) return true;
         // 登頂チェックでフィルタ：選択された登頂チェックがfalseが存在、かつ登頂チェックに対象のIDがない場合、trueを返す
-        if (this.selectedValue.climbed.includes(false) && !this.getHasClimbedById(route.id)) return true;
+        if (selectedValue.climbed.includes(false) && !this.getHasClimbedById(route.id)) return true;
         return false;
       });
     },
   },
   created() {
     this.routes = this.getRoutesByGrade(this.grade.physical, this.grade.technological);
-    this.selectedValue = this.getMatrixFilterValue();
   },
   mounted() {
     // stateの値の変更を検知する（ミューテーション実行後の値を取得）

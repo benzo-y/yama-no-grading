@@ -59,22 +59,22 @@ import TooltipAxis from "./matrix/TooltipAxis.vue";
 import { MATRIX_AXIS } from "../../const/const";
 
 export default {
-    data: () => ({
-      routes: [],
-      physical: MATRIX_AXIS.physical,
-      technological: MATRIX_AXIS.technological,
-      dialog: {
-        isShow: false,
-        id: null,
-      }
-    }),
-    components: {
-      CardRouteListVue,
-      CardFilterVue,
-      CardRouteForm,
-      TooltipAxis
+  data: () => ({
+    routes: [],
+    physical: MATRIX_AXIS.physical,
+    technological: MATRIX_AXIS.technological,
+    dialog: {
+      isShow: false,
+      id: null,
     },
-  }
+  }),
+  components: {
+    CardRouteListVue,
+    CardFilterVue,
+    CardRouteForm,
+    TooltipAxis
+  },
+}
 </script>
 
 <style scoped>
