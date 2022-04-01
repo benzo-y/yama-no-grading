@@ -47,6 +47,12 @@
         :clickClose.sync="dialog.isShow"
       />
     </v-dialog>
+    <v-overlay :value="showLoader">
+      <v-progress-circular
+        indeterminate
+        size="64"
+      ></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -57,6 +63,7 @@ import CardFilterVue from "./matrix/CardFilter.vue";
 import CardRouteForm from "../parts/CardRouteForm.vue"
 import TooltipAxis from "./matrix/TooltipAxis.vue";
 import { MATRIX_AXIS } from "../../const/const";
+import { mapGetters } from "vuex";
 
 export default {
   data: () => ({
@@ -73,6 +80,9 @@ export default {
     CardFilterVue,
     CardRouteForm,
     TooltipAxis
+  },
+  computed: {
+    ...mapGetters(["showLoader"]),
   },
 }
 </script>

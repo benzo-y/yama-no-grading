@@ -18,6 +18,7 @@
             <v-list-item
               @mousedown.prevent
               @click="clickAll(changePublisher)"
+              @mousedown="loaderToggle"
             >
               <v-list-item-action>
                 <v-icon :color="selectAllIcon.color">
@@ -31,6 +32,23 @@
               </v-list-item-content>
             </v-list-item>
             <v-divider class="mt-2"></v-divider>
+          </template>
+          <template v-slot:[`item`]="{ item, attrs, on }">
+            <v-list-item
+              v-on="on"
+              v-bind="attrs"
+              #default="{ active }"
+              @mousedown="loaderToggle"
+            >
+              <v-list-item-action>
+              <v-checkbox :input-value="active"></v-checkbox>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{item.name}}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </template>
         </v-select>
       </v-col>
@@ -51,9 +69,22 @@
             <v-icon v-if="item.color" :color="item.color" class="mx-1">mdi-trophy</v-icon>
             <span v-else></span>
           </template>
-          <template v-slot:[`item`]="{ item }">
-            <v-icon v-if="item.color" :color="item.color">mdi-trophy</v-icon>
-            <span v-else></span>
+          <template v-slot:[`item`]="{ item, attrs, on }">
+            <v-list-item
+              v-on="on"
+              v-bind="attrs"
+              #default="{ active }"
+              @mousedown="loaderToggle"
+            >
+              <v-list-item-action>
+              <v-checkbox :input-value="active"></v-checkbox>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  <v-icon :color="item.color">mdi-trophy</v-icon>
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </template>
         </v-select>
       </v-col>
@@ -94,12 +125,14 @@ export default {
     this.selectedValue = this.getMatrixFilterValue();
   },
   methods: {
-    ...mapActions(["setMatrixFilterValue"]),
+    ...mapActions(["setMatrixFilterValue", "loaderToggle"]),
     changePublisher () {
       this.setMatrixFilterValue(this.selectedValue);
+      this.loaderToggle();
     },
     changeClimbed () {
       this.setMatrixFilterValue(this.selectedValue);
+      this.loaderToggle();
     },
     clickAll(callback) {
       if (this.isSelectedAllPublisher) {

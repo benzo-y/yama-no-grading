@@ -7,7 +7,6 @@ import {
 import { db } from '../plugins/firebase';
 import { PUBLISHER } from '../const/const'
 
-// ダミーデータ
 import gradingData from '../data/gradingData';
 
 Vue.use(Vuex)
@@ -21,6 +20,7 @@ export default new Vuex.Store({
       publisher: Object.keys(PUBLISHER),
       climbed: [true, false],
     },
+    loaderFlag: false,
   },
   mutations: {
     setLoginUser(state, user) {
@@ -49,6 +49,9 @@ export default new Vuex.Store({
     },
     setMatrixFilterValue(state, selectedValue) {
       state.matrixFilterValue = selectedValue;
+    },
+    loaderToggle(state) {
+      state.loaderFlag = !state.loaderFlag;
     },
   },
   actions: {
@@ -153,6 +156,9 @@ export default new Vuex.Store({
     setMatrixFilterValue({commit}, selectedValue) {
       commit('setMatrixFilterValue', selectedValue);
     },
+    loaderToggle({commit}) {
+      commit('loaderToggle');
+    }
   },
   modules: {
   },
@@ -170,5 +176,6 @@ export default new Vuex.Store({
       return allRoutes.filter(route => route.physical === phy && route.technological === tech);
     },
     getMatrixFilterValue: state => () => ({...state.matrixFilterValue}),
+    showLoader: state => state.loaderFlag,
   },
 })
